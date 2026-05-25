@@ -59,8 +59,8 @@ def home():
 
     body = (
         _hero("HOBBA CLUB",
-              '안전하게 시작하는 <span class="gradtext">호스트바 선수 채용</span>',
-              "호빠클럽은 만 19세 이상 호스트바 선수(남성 호스트) 채용정보 플랫폼입니다. 운영·편집팀이 직접 검수한 공고와 안전 가이드로 더 안심하고 일자리를 찾으세요.",
+              '안전하게 시작하는 <span class="gradtext">호빠·호스트바 선수 채용</span>',
+              "호빠클럽은 만 19세 이상 호빠·호스트바 선수(남성 호스트) 채용정보 플랫폼입니다. 호빠알바 구인구직, 운영·편집팀이 직접 검수한 선수 모집 공고와 안전 가이드로 더 안심하고 일자리를 찾으세요.",
               '<a class="btn btn-gold" href="/jobs/">채용정보 보기</a>'
               '<a class="btn btn-ghost" href="/safety/">안전센터 둘러보기</a>') +
         f'<section class="wrap" style="padding-top:0;margin-top:-32px">{_byline()}</section>'
@@ -79,14 +79,14 @@ def home():
         f'<section class="wrap" style="padding-top:0"><div class="notice-box">{AGE_NOTICE}</div></section>' +
         _faq_section(SUPPORT_FAQ[:5])
     )
-    ld = [webpage_ld("/", f'{C["name"]} | 만 19세 이상 호스트바 선수 채용정보 플랫폼',
-                     '만 19세 이상 호스트바 선수(남성 호스트) 채용정보 플랫폼.',
+    ld = [webpage_ld("/", f'{C["name"]} | 호빠·호스트바 선수 채용정보 (호빠알바 구인구직)',
+                     '만 19세 이상 호빠·호스트바 선수(남성 호스트) 채용정보 플랫폼.',
                      published="2026-01-01", modified=LAST_UPDATED),
           {"@type": "CollectionPage", "name": C["name"], "url": C["url"] + "/"},
           faq_ld(SUPPORT_FAQ[:5])]
     return "/index.html", page(
-        f'{C["name"]} | 만 19세 이상 호스트바 선수 채용정보 플랫폼',
-        '만 19세 이상 호스트바 선수(남성 호스트) 채용정보. 운영·편집팀이 직접 검수한 공고와 안전 가이드, 투명한 수입·정산 정보를 제공하는 호빠클럽.',
+        f'{C["name"]} | 호빠·호스트바 선수 채용 (호빠알바 구인구직)',
+        '만 19세 이상 호빠·호스트바 선수(남성 호스트) 채용정보. 호빠알바 구인구직·선수 모집 공고와 안전 가이드, 투명한 수입·정산 정보를 제공하는 호빠클럽.',
         "/", body, jsonld=ld, verification=True, modified=LAST_UPDATED)
 
 
@@ -130,8 +130,8 @@ def jobs():
         "document.getElementById('nojob').style.display=n?'none':'block'};</script>")
 
     body = (
-        _hero("채용정보", "포지션·지역별 호스트바 선수 채용",
-              "검수 정책에 따라 게재되는 호스트바 선수(남성 호스트) 채용정보입니다. 포지션마다 업무·수입 구조가 다르므로, 지원 전 공고를 정확히 읽는 법부터 확인하세요.",
+        _hero("채용정보", "포지션·지역별 호빠·호스트바 선수 채용",
+              "검수 정책에 따라 게재되는 호빠·호스트바 선수(남성 호스트) 채용정보입니다. 호빠알바 구인구직, 포지션마다 업무·수입 구조가 다르므로 지원 전 공고를 정확히 읽는 법부터 확인하세요.",
               '<a class="btn btn-gold" href="/magazine/interview-guide/">지원·면접 가이드</a>'
               '<a class="btn btn-ghost" href="/safety/">안전센터</a>') +
         f'<section class="wrap" style="padding-top:0;margin-top:-32px">{_byline()}</section>'
@@ -165,8 +165,8 @@ def jobs():
           {"@type": "CollectionPage", "name": "채용정보", "url": C["url"] + "/jobs/"},
           item_list, faq_ld(JOBS_FAQ)]
     return "/jobs/index.html", page(
-        "호스트바 선수 채용 — 포지션·지역별 모집과 공고 보는 법 | 호빠클럽",
-        "호스트바 선수(남성 호스트) 채용정보. 신입·경력·에이스 포지션별 안내와 공고 읽는 법, 수입 구조, 지원 전 체크리스트를 제공합니다. 만 19세 이상 대상.",
+        "호빠·호스트바 선수 채용 — 호빠알바 구인구직 | 호빠클럽",
+        "호빠·호스트바 선수(남성 호스트) 채용정보. 신입·경력·에이스 포지션별 안내와 공고 읽는 법, 수입 구조, 지원 전 체크리스트를 제공하는 호빠알바 구인구직. 만 19세 이상 대상.",
         "/jobs/", body, jsonld=ld, modified=LAST_UPDATED)
 
 
@@ -211,8 +211,8 @@ def job_role_pages():
                "mainEntityOfPage": C["url"] + f"/jobs/{slug}/"},
               faq_ld(r["faq"])]
         out.append((f"/jobs/{slug}/index.html", page(
-            f'{r["name"]} 채용 — 업무·적성·수입 구조·지원 확인사항 | 호빠클럽',
-            f'호스트바 {r["name"]} 채용 안내. {r["lead"]} 업무·적성·근무 형태·수입 구조와 지원 시 확인할 점을 정리했습니다.',
+            f'{r["name"]} 채용 — 호빠·호스트바 선수 모집(호빠알바) | 호빠클럽',
+            f'호빠·호스트바 {r["name"]} 채용 안내. {r["lead"]} 업무·적성·근무 형태·수입 구조와 지원 시 확인할 점을 정리한 호빠알바 구인구직.',
             f"/jobs/{slug}/", body, jsonld=ld, modified=LAST_UPDATED)))
     return out
 
@@ -318,13 +318,13 @@ def magazine_hub():
         f'<a class="card" href="/magazine/{s}/" style="display:block"><span class="tag">{a["tag"]}</span>'
         f'<h3 style="margin:12px 0 8px">{a["title"]}</h3><p style="font-size:13.5px">{a["desc"]}</p></a>'
         for s, a in MAGAZINE.items())
-    body = (_hero("매거진", "호스트바 선수, 제대로 알고 시작하기",
-                  "입문부터 면접·수입·후기까지. 선수에게 필요한 실용 정보를 정리한 호빠클럽 매거진입니다.") +
+    body = (_hero("매거진", "호빠·호스트바 선수, 제대로 알고 시작하기",
+                  "입문부터 면접·수입·후기까지. 호빠알바(호스트바) 선수에게 필요한 실용 정보를 정리한 호빠클럽 매거진입니다.") +
             f'<section class="wrap" style="padding-top:0"><div class="grid g2">{cards}</div></section>')
     ld = [breadcrumb([("홈", "/"), ("매거진", "/magazine/")])]
     return "/magazine/index.html", page(
-        "호빠클럽 매거진 — 호스트바 선수 입문·면접·수입·후기 가이드",
-        "선수 입문 가이드, 지원·면접 가이드, 수입·정산 정보, 후기·인터뷰까지. 호빠알바(호스트바) 구직에 필요한 정보를 담은 호빠클럽 매거진.",
+        "호빠클럽 매거진 — 호빠·호스트바 선수 가이드 (호빠알바)",
+        "선수 입문 가이드, 지원·면접, 수입·정산 정보, 후기·인터뷰까지. 호빠·호스트바(호빠알바) 구직에 필요한 정보를 담은 호빠클럽 매거진.",
         "/magazine/", body, jsonld=ld)
 
 
