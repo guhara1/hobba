@@ -251,7 +251,7 @@ def _article_pages(store, base, label, ld_breadcrumb_label):
             f'작성·검수 <a href="/about/" style="color:var(--g1)">{EDITORIAL["byline"]}</a>'
             f' · 발행 {a["date"]} · 최종 업데이트 {LAST_UPDATED}</p>'
             f'<div class="toc-card" style="margin-bottom:36px"><strong>목차</strong><ul>{toc}</ul></div>'
-            f'<div class="prose" style="max-width:none">{secs}</div>'
+            f'<div class="prose">{secs}</div>'
             f'<div class="notice-box" style="margin-top:24px">{AGE_NOTICE}</div>'
             f'{cite_block}'
             f'{_internal_links(base, slug)}'

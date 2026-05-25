@@ -264,9 +264,9 @@ th{color:var(--g1);font-weight:700;background:rgba(255,255,255,.02);font-size:13
 .hp{position:absolute;left:-9999px;opacity:0}
 
 /* 본문 가독(article) */
-.prose{max-width:var(--measure);font-size:16.5px}
-.prose h2{font-size:clamp(20px,2.4vw,25px);margin:0 0 14px;color:#fbf9ff;letter-spacing:-.02em;line-height:1.3}
-.prose p{font-size:16.5px;line-height:1.92;margin-bottom:17px;color:#ddd8e8;word-break:keep-all}
+.prose{max-width:760px;font-size:17px}
+.prose h2{font-size:clamp(21px,2.6vw,26px);margin:0 0 16px;color:#ffffff;letter-spacing:-.02em;line-height:1.3}
+.prose p{font-size:17px;line-height:1.95;margin-bottom:18px;color:#f1eef8;font-weight:400;word-break:keep-all}
 .prose p:last-child{margin-bottom:0}
 .prose strong{color:#fff;font-weight:700}
 .prose a{color:var(--g1);text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px;text-decoration-color:rgba(230,200,148,.45)}
