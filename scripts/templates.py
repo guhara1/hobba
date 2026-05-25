@@ -179,20 +179,22 @@ a.card:hover,.card-h:hover{transform:translateY(-3px);border-color:rgba(230,200,
 .vvip-badge{align-self:flex-start;font-size:11px;font-weight:900;letter-spacing:.1em;padding:4px 12px;
   border-radius:999px;background:var(--grad);color:#15100a;box-shadow:0 8px 18px -6px rgba(200,156,92,.85)}
 .vvip-banner .t{font-size:19px;font-weight:800;letter-spacing:-.02em;margin-top:12px}
-.vvip-banner .a{font-size:12.5px;color:var(--dim);margin-top:3px}
-.vvip-banner .c{margin-top:auto;padding-top:14px;font-size:13.5px;color:var(--g1);font-weight:600}
+.vvip-banner .a{font-size:13px;color:#ece2cd;font-weight:500;margin-top:5px}
+.vvip-banner .c{margin-top:auto;padding-top:14px;font-size:13.5px;color:var(--g1);font-weight:700}
 /* VIP: 중간 — 골드 테두리, 랭킹 없음, 4열 */
 .vip-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:13px}
-.vip-banner{position:relative;display:flex;flex-direction:column;gap:5px;min-height:126px;padding:18px;
-  border-radius:15px;border:1px solid rgba(230,200,148,.28);
+.vip-banner{position:relative;overflow:hidden;display:flex;flex-direction:column;gap:5px;min-height:128px;padding:18px;
+  border-radius:15px;border:1px solid rgba(230,200,148,.34);
   background:linear-gradient(160deg,var(--surface),var(--surface-2));
-  transition:transform .18s,border-color .18s}
-.vip-banner:hover{transform:translateY(-3px);border-color:var(--g2)}
+  transition:transform .18s,border-color .18s,box-shadow .18s}
+.vip-banner::before{content:"";position:absolute;left:0;right:0;top:0;height:2px;
+  background:linear-gradient(90deg,var(--g2),transparent 72%)}
+.vip-banner:hover{transform:translateY(-3px);border-color:var(--g2);box-shadow:0 16px 36px -22px rgba(200,156,92,.5)}
 .vip-badge{align-self:flex-start;font-size:10.5px;font-weight:800;letter-spacing:.08em;padding:3px 10px;
-  border-radius:999px;color:var(--g1);border:1px solid rgba(230,200,148,.5);background:rgba(230,200,148,.08)}
-.vip-banner .t{font-size:15px;font-weight:700;margin-top:4px}
-.vip-banner .a{font-size:12px;color:var(--dim)}
-.vip-banner .c{margin-top:auto;font-size:12.5px;color:var(--muted)}
+  border-radius:999px;color:var(--g1);border:1px solid rgba(230,200,148,.5);background:rgba(230,200,148,.1)}
+.vip-banner .t{font-size:16px;font-weight:800;letter-spacing:-.01em;margin-top:5px;color:var(--text)}
+.vip-banner .a{font-size:12.5px;color:var(--muted)}
+.vip-banner .c{margin-top:auto;font-size:13px;color:var(--g1);font-weight:600}
 /* 프리미엄(일반): 한줄광고 리스트형 */
 .linead{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface)}
 .linead a{display:flex;align-items:center;gap:14px;padding:14px 18px;border-bottom:1px solid var(--line);transition:background .13s}
