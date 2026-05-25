@@ -410,7 +410,7 @@ def header_html():
 
 def promo_bar():
     return ('<div class="promo"><div class="promo-in"><span class="pill">광고안내</span>'
-            '<span>호빠클럽 채용광고 등록 · VVIP/VIP/프리미엄 · 만 19세 이상 검수 게재</span>'
+            '<span>호빠클럽 채용광고 등록 · VVIP/VIP/Special · 만 19세 이상 검수 게재</span>'
             '<a class="arrow" href="/advertising/">광고 알아보기 →</a></div></div>')
 
 

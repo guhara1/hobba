@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """페이지 빌더: 각 함수는 (path, html)를 반환."""
-from data import (COMPANY, JOBS, JOBS_AD_BANNERS, JOBS_FAQ, AD_PRODUCTS, AD_FAQ,
+from data import (COMPANY, JOBS, JOBS_AD_BANNERS, JOBS_FAQ, AD_PRODUCTS, AD_FAQ, AD_INQUIRY_TEL,
                   AGE_NOTICE, EDITORIAL, TRUST_SOURCES, LAST_UPDATED)
 from content import MAGAZINE, SAFETY, NOTICES, SUPPORT_FAQ, POLICIES
 from templates import page, breadcrumb, faq_ld, webpage_ld
@@ -406,14 +406,22 @@ def about_page():
 
 
 def advertising():
-    # 상품 표
-    rows = "".join(
-        f'<tr><td><strong>{p["tier"]}</strong></td><td>{p["slot"]}</td><td>{p["limit"]}</td>'
-        f'<td>{p["m1"]}</td><td>{p["m6"]}</td><td>{p["m12"]}</td></tr>' for p in AD_PRODUCTS)
+    def price_rows(p):
+        return "".join(
+            f'<div style="display:flex;justify-content:space-between;gap:12px;'
+            f'border-top:1px solid var(--line);padding:8px 0">'
+            f'<span style="color:var(--dim);font-size:13px">{per}</span>'
+            f'<span style="color:var(--g1);font-weight:800;font-size:15px">{amt}</span></div>'
+            for per, amt in p["prices"])
+
     prod_cards = "".join(
-        f'<div class="card"><span class="tag">{p["tier"]}</span>'
-        f'<h3 style="margin:12px 0 8px">{p["slot"]}</h3><p style="font-size:13.5px">{p["desc"]}</p>'
-        f'<p style="margin-top:10px;color:var(--g1);font-weight:700">1개월 {p["m1"]}원~</p></div>'
+        f'<div class="card card-h">'
+        f'<span class="tag">{p["tier"]}</span>'
+        f'<h3 style="margin:12px 0 4px">{p["slot"]}</h3>'
+        f'<div style="margin:12px 0 16px">{price_rows(p)}</div>'
+        f'<ul style="padding-left:18px;color:var(--muted);font-size:13px;line-height:1.6">'
+        + "".join(f'<li style="margin-bottom:5px">{ft}</li>' for ft in p["features"])
+        + '</ul></div>'
         for p in AD_PRODUCTS)
 
     def sec(id_, title, inner):
@@ -424,12 +432,13 @@ def advertising():
               "호빠클럽은 검수된 공고만 노출하는 채용정보 플랫폼입니다. 건전하게 운영되는 매장을 위한 광고 상품과 기준을 안내합니다.",
               '<a class="btn btn-gold" href="/advertising/contact/">광고문의 하기</a>') +
         sec("products", "광고 상품 안내",
-            f'<div class="grid g3" style="margin-bottom:18px">{prod_cards}</div>'
-            f'<div class="table-wrap"><table><thead><tr><th>등급</th><th>노출 위치</th><th>슬롯</th><th>1개월</th><th>6개월</th><th>12개월</th></tr></thead>'
-            f'<tbody>{rows}</tbody></table></div>') +
+            f'<div class="grid g3">{prod_cards}</div>'
+            f'<p style="margin-top:16px;font-size:13px;color:var(--dim)">표시 금액은 부가세 별도입니다. '
+            f'선착순 예약 상품은 고객센터로 별도 문의해 주세요. · 문의 전화 {AD_INQUIRY_TEL}</p>') +
         sec("placement", "노출 위치 안내",
-            '<p>VVIP는 메인 히어로 직하 최상단, VIP는 주요 콘텐츠 상단, 프리미엄은 목록 하단에 노출됩니다. '
-            '같은 등급 내에서는 선등록 순으로 배치되며, 지역·형태별로 노출이 분산됩니다.</p>') +
+            '<p>VVIP는 메인 최상단에 박스 형태로 고정 노출되며 VIP·일반 줄광고 서비스가 함께 포함됩니다. '
+            'VIP·Special 광고는 VIP 광고와 일반 광고 사이에 줄광고 형태로 랜덤 노출되고, 모바일 급구정보 카테고리에 단독 노출됩니다. '
+            '같은 등급 내에서는 선등록 순으로 배치됩니다.</p>') +
         sec("process", "광고 등록 절차",
             "".join(_note(i + 1, t, [d]) for i, (t, d) in enumerate([
                 ("광고문의 접수", "광고문의 페이지에서 매장 정보와 희망 위치·기간을 남깁니다."),
@@ -444,10 +453,16 @@ def advertising():
             '<p>모든 광고는 게재 전 내부 심사를 거칩니다. 업무 설명의 구체성, 급여 표현의 적정성, 법령·정책 위반 여부를 확인하며, '
             '기준에 맞지 않으면 보완을 요청하거나 게재를 제한합니다.</p>') +
         sec("price", "광고비 안내",
-            f'<div class="table-wrap"><table><thead><tr><th>등급</th><th>1개월</th><th>6개월</th><th>12개월</th></tr></thead><tbody>' +
-            "".join(f'<tr><td>{p["tier"]}</td><td>{p["m1"]}원</td><td>{p["m6"]}원</td><td>{p["m12"]}원</td></tr>'
-                    for p in AD_PRODUCTS) + '</tbody></table></div>'
-            '<p style="margin-top:10px;font-size:13px;color:var(--dim)">표시 금액은 부가세 별도이며, 프로모션에 따라 변동될 수 있습니다.</p>') +
+            '<div class="grid g3">' +
+            "".join(
+                f'<div class="card"><span class="tag">{p["tier"]}</span>'
+                + "".join(f'<div style="display:flex;justify-content:space-between;gap:12px;'
+                          f'border-top:1px solid var(--line);padding:9px 0;font-size:14px">'
+                          f'<span style="color:var(--muted)">{per}</span>'
+                          f'<span style="color:var(--g1);font-weight:800">{amt}</span></div>'
+                          for per, amt in p["prices"])
+                + '</div>' for p in AD_PRODUCTS) + '</div>'
+            f'<p style="margin-top:14px;font-size:13px;color:var(--dim)">표시 금액은 부가세 별도이며, 프로모션에 따라 변동될 수 있습니다. · 문의 전화 {AD_INQUIRY_TEL}</p>') +
         sec("refund", "환불 및 수정 정책",
             '<p>게재 전 취소 시 전액 환불됩니다. 게재 후에는 잔여 기간을 기준으로 환불 금액이 산정되며, '
             '광고 소재 수정은 운영 시간 내 요청 시 처리됩니다. 정책 위반으로 게재가 중단된 경우 환불이 제한될 수 있습니다.</p>') +
@@ -458,7 +473,8 @@ def advertising():
     ld = [breadcrumb([("홈", "/"), ("광고안내", "/advertising/")]),
           {"@type": "Service", "name": "호빠클럽 채용광고", "provider": {"@id": C["url"] + "/#org"},
            "areaServed": "KR", "description": "검수 기준에 따른 채용광고 게재 서비스",
-           "offers": [{"@type": "Offer", "name": p["tier"], "price": p["m1"].replace("만", "0000"),
+           "offers": [{"@type": "Offer", "name": p["tier"],
+                       "price": p["prices"][0][1].replace(",", "").replace("원", ""),
                        "priceCurrency": "KRW"} for p in AD_PRODUCTS]},
           faq_ld(AD_FAQ)]
     return "/advertising/index.html", page(
@@ -473,11 +489,11 @@ def advertising_contact():
         '<div class="field"><label>담당자명<span class="req">*</span></label><input name="manager" required></div>'
         '<div class="field"><label>연락처<span class="req">*</span></label><input name="phone" required></div>'
         '<div class="field"><label>이메일<span class="req">*</span></label><input name="email" type="email" required></div>'
-        '<div class="field"><label>광고 희망 위치<span class="req">*</span></label>'
-        '<select name="placement" required><option>VVIP — 메인 최상단</option><option>VIP — 콘텐츠 상단</option>'
-        '<option>프리미엄 — 목록 하단</option><option>상담 후 결정</option></select></div>'
+        '<div class="field"><label>광고 희망 상품<span class="req">*</span></label>'
+        '<select name="placement" required><option>VVIP — 메인 최상단 고정</option><option>VIP</option>'
+        '<option>Special</option><option>상담 후 결정</option></select></div>'
         '<div class="field"><label>광고 희망 기간<span class="req">*</span></label>'
-        '<select name="period" required><option>1개월</option><option>6개월</option><option>12개월</option><option>상담 후 결정</option></select></div>'
+        '<select name="period" required><option>1개월</option><option>2개월</option><option>3개월</option><option>6개월</option><option>상담 후 결정</option></select></div>'
         '<div class="field"><label>문의 내용<span class="req">*</span></label>'
         '<textarea name="message" rows="5" required placeholder="매장 소개와 문의 사항을 적어 주세요."></textarea></div>'
         '<div class="field"><label><input type="checkbox" required style="width:auto;margin-right:8px">'
