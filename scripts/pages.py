@@ -14,11 +14,11 @@ def _note(num, title, paras):
             f'<div><h3 class="note-title">{title}</h3><div class="note-text">{ps}</div></div></div>')
 
 
-def _hero(kicker, h1, sub, ctas=""):
-    return (f'<section class="wrap" style="padding-bottom:32px"><span class="kicker">{kicker}</span>'
-            f'<h1 style="margin:16px 0 18px">{h1}</h1>'
-            f'<p class="note-text" style="font-size:17px">{sub}</p>'
-            f'<div style="margin-top:26px;display:flex;gap:12px;flex-wrap:wrap">{ctas}</div></section>')
+def _hero(kicker, h1, sub, ctas="", byline=""):
+    cta = f'<div class="hero-cta">{ctas}</div>' if ctas else ""
+    bl = f'<div class="hero-byline">{byline}</div>' if byline else ""
+    return (f'<section class="wrap hero"><span class="kicker">{kicker}</span>'
+            f'<h1>{h1}</h1><p class="hero-sub note-text">{sub}</p>{cta}{bl}</section>')
 
 
 def _faq_section(pairs, title="자주 묻는 질문"):
@@ -28,7 +28,7 @@ def _faq_section(pairs, title="자주 묻는 질문"):
 
 # ─────────────────────────────────────────────────────────────
 def _byline():
-    return (f'<p style="margin-top:18px;font-size:13px;color:var(--dim)">'
+    return (f'<p style="font-size:13px;color:var(--dim)">'
             f'작성·검수 <a href="/about/" style="color:var(--g1)">{EDITORIAL["byline"]}</a>'
             f' · 최종 업데이트 {LAST_UPDATED}</p>')
 
@@ -62,8 +62,8 @@ def home():
               '안전하게 시작하는 <span class="gradtext">호빠·호스트바 선수 채용</span>',
               "호빠클럽은 만 19세 이상 호빠·호스트바 선수(남성 호스트) 채용정보 플랫폼입니다. 호빠알바 구인구직, 운영·편집팀이 직접 검수한 선수 모집 공고와 안전 가이드로 더 안심하고 일자리를 찾으세요.",
               '<a class="btn btn-gold" href="/jobs/">채용정보 보기</a>'
-              '<a class="btn btn-ghost" href="/safety/">안전센터 둘러보기</a>') +
-        f'<section class="wrap" style="padding-top:0;margin-top:-32px">{_byline()}</section>'
+              '<a class="btn btn-ghost" href="/safety/">안전센터 둘러보기</a>',
+              byline=_byline()) +
         f'<section class="wrap" style="padding-top:0"><h2>최근 채용정보</h2>'
         f'<div class="grid g3">{job_cards}</div></section>'
         f'<section class="wrap" style="padding-top:0"><span class="kicker">HOW IT WORKS</span>'
@@ -133,8 +133,8 @@ def jobs():
         _hero("채용정보", "포지션·지역별 호빠·호스트바 선수 채용",
               "검수 정책에 따라 게재되는 호빠·호스트바 선수(남성 호스트) 채용정보입니다. 호빠알바 구인구직, 포지션마다 업무·수입 구조가 다르므로 지원 전 공고를 정확히 읽는 법부터 확인하세요.",
               '<a class="btn btn-gold" href="/magazine/interview-guide/">지원·면접 가이드</a>'
-              '<a class="btn btn-ghost" href="/safety/">안전센터</a>') +
-        f'<section class="wrap" style="padding-top:0;margin-top:-32px">{_byline()}</section>'
+              '<a class="btn btn-ghost" href="/safety/">안전센터</a>',
+              byline=_byline()) +
         f'<section class="wrap" style="padding-top:0"><span class="kicker">공고 읽는 법</span>'
         f'<h2 style="margin:12px 0 24px">채용정보, 이 5가지를 먼저 확인하세요</h2>{chk}</section>'
         f'<section class="wrap" style="padding-top:0"><span class="kicker">포지션별 안내</span>'
@@ -185,8 +185,8 @@ def job_role_pages():
             _hero(f'채용정보 · {r["name"]}', f'{r["name"]} 채용 안내',
                   r["lead"],
                   '<a class="btn btn-gold" href="/magazine/interview-guide/">지원·면접 가이드</a>'
-                  '<a class="btn btn-ghost" href="/jobs/">채용정보 전체</a>') +
-            f'<section class="wrap" style="padding-top:0;margin-top:-32px">{_byline()}</section>'
+                  '<a class="btn btn-ghost" href="/jobs/">채용정보 전체</a>',
+                  byline=_byline()) +
             f'<section class="wrap" style="padding-top:0;max-width:840px">'
             f'<h2 style="font-size:22px">주요 업무</h2>{ul(r["duties"])}'
             f'<h2 style="font-size:22px;margin-top:32px">적성·필요 역량</h2>{ul(r["aptitude"])}'
@@ -277,22 +277,22 @@ def _article_pages(store, base, label, ld_breadcrumb_label):
                           f'<div class="grid g2">{cards}</div></section>')
 
         body = (
-            f'<article class="wrap"><a href="{base}" style="color:var(--g1);font-size:13px">← {label}</a>'
-            f'<span class="tag" style="margin:18px 0 14px;display:inline-block">{a["tag"]} · 읽기 {a["read"]}</span>'
-            f'<h1>{a["title"]}</h1>'
-            f'<p style="margin:16px 0 8px">{a["desc"]}</p>'
-            f'<p style="font-size:13px;color:var(--dim);margin-bottom:26px">'
+            f'<article class="wrap" style="max-width:840px">'
+            f'<a href="{base}" style="color:var(--g1);font-size:13px;font-weight:600">← {label}</a>'
+            f'<span class="tag" style="margin:20px 0 16px;display:inline-block">{a["tag"]} · 읽기 {a["read"]}</span>'
+            f'<h1 style="font-size:clamp(28px,4vw,42px)">{a["title"]}</h1>'
+            f'<p class="lead" style="margin:18px 0 10px">{a["desc"]}</p>'
+            f'<p style="font-size:13px;color:var(--dim);margin-bottom:30px">'
             f'작성·검수 <a href="/about/" style="color:var(--g1)">{EDITORIAL["byline"]}</a>'
             f' · 발행 {a["date"]} · 최종 업데이트 {LAST_UPDATED}</p>'
-            f'<div class="card" style="margin-bottom:32px"><strong>목차</strong>'
-            f'<ul style="margin-top:10px;padding-left:18px;color:var(--muted)">{toc}</ul></div>'
-            f'{secs}'
-            f'<div class="notice-box" style="margin-top:20px">{AGE_NOTICE}</div>'
+            f'<div class="toc-card" style="margin-bottom:36px"><strong>목차</strong><ul>{toc}</ul></div>'
+            f'<div class="prose" style="max-width:none">{secs}</div>'
+            f'<div class="notice-box" style="margin-top:24px">{AGE_NOTICE}</div>'
             f'{cite_block}'
             f'{_internal_links(base, slug)}'
             f'{_author_box()}'
-            f'<section style="margin-top:44px"><h2 style="font-size:22px">함께 보기</h2>'
-            f'<div class="grid g3" style="margin-top:16px">{rel}</div></section></article>'
+            f'<section style="margin-top:48px"><h2 style="font-size:22px;margin-bottom:16px">함께 보기</h2>'
+            f'<div class="grid g3">{rel}</div></section></article>'
         )
         art = {"@type": "Article", "headline": a["title"], "description": a["desc"],
                "author": {"@type": "Organization", "@id": C["url"] + "/#org", "name": EDITORIAL["byline"]},
@@ -480,8 +480,8 @@ def advertising():
               '<a class="btn btn-gold" href="/advertising/contact/">광고문의 하기</a>') +
         sec("products", "광고 상품 안내",
             f'<div class="grid g3" style="margin-bottom:18px">{prod_cards}</div>'
-            f'<table><thead><tr><th>등급</th><th>노출 위치</th><th>슬롯</th><th>1개월</th><th>6개월</th><th>12개월</th></tr></thead>'
-            f'<tbody>{rows}</tbody></table>') +
+            f'<div class="table-wrap"><table><thead><tr><th>등급</th><th>노출 위치</th><th>슬롯</th><th>1개월</th><th>6개월</th><th>12개월</th></tr></thead>'
+            f'<tbody>{rows}</tbody></table></div>') +
         sec("placement", "노출 위치 안내",
             '<p>VVIP는 메인 히어로 직하 최상단, VIP는 주요 콘텐츠 상단, 프리미엄은 목록 하단에 노출됩니다. '
             '같은 등급 내에서는 선등록 순으로 배치되며, 지역·형태별로 노출이 분산됩니다.</p>') +
@@ -499,9 +499,9 @@ def advertising():
             '<p>모든 광고는 게재 전 내부 심사를 거칩니다. 업무 설명의 구체성, 급여 표현의 적정성, 법령·정책 위반 여부를 확인하며, '
             '기준에 맞지 않으면 보완을 요청하거나 게재를 제한합니다.</p>') +
         sec("price", "광고비 안내",
-            f'<table><thead><tr><th>등급</th><th>1개월</th><th>6개월</th><th>12개월</th></tr></thead><tbody>' +
+            f'<div class="table-wrap"><table><thead><tr><th>등급</th><th>1개월</th><th>6개월</th><th>12개월</th></tr></thead><tbody>' +
             "".join(f'<tr><td>{p["tier"]}</td><td>{p["m1"]}원</td><td>{p["m6"]}원</td><td>{p["m12"]}원</td></tr>'
-                    for p in AD_PRODUCTS) + '</tbody></table>'
+                    for p in AD_PRODUCTS) + '</tbody></table></div>'
             '<p style="margin-top:10px;font-size:13px;color:var(--dim)">표시 금액은 부가세 별도이며, 프로모션에 따라 변동될 수 있습니다.</p>') +
         sec("refund", "환불 및 수정 정책",
             '<p>게재 전 취소 시 전액 환불됩니다. 게재 후에는 잔여 기간을 기준으로 환불 금액이 산정되며, '
