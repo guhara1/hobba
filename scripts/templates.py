@@ -231,9 +231,13 @@ def _base_graph():
         {"@type": "Organization", "@id": c["url"] + "/#org", "name": c["name"],
          "legalName": c["legal_name"], "url": c["url"], "email": c["email"],
          "description": c["tagline"], "logo": logo, "image": og,
+         "telephone": c["tel"], "taxID": c["biz_no"],
+         "founder": {"@type": "Person", "name": c["ceo"]},
+         "address": {"@type": "PostalAddress", "addressCountry": "KR",
+                     "streetAddress": c["address"]},
          "foundingDate": "2026", "knowsAbout": ["호빠알바 채용정보", "구직자 안전", "채용광고 검수"],
          "contactPoint": {"@type": "ContactPoint", "contactType": "customer service",
-                          "email": c["email"], "availableLanguage": "Korean"}},
+                          "telephone": c["tel"], "email": c["email"], "availableLanguage": "Korean"}},
         {"@type": "WebSite", "@id": c["url"] + "/#site", "name": c["name"], "url": c["url"],
          "inLanguage": "ko-KR", "publisher": {"@id": c["url"] + "/#org"},
          "potentialAction": {"@type": "SearchAction",
@@ -338,11 +342,12 @@ def footer_html():
         ls = "".join(f'<a href="{h}">{n}</a>' for n, h in links)
         col_html += f'<div><h4>{title}</h4>{ls}</div>'
     info = (f'<div><h4>회사정보</h4><div class="foot-info">'
-            f'{c["name"]} · 대표 {c["ceo"]}<br>'
+            f'상호 {c["legal_name"]} ({c["name"]}) · 대표 {c["ceo"]}<br>'
+            f'사업자등록번호 {c["biz_no"]}<br>'
+            f'직업정보제공사업 신고 {c["job_report_no"]}<br>'
+            f'{c["address"]}<br>'
             f'고객센터 {c["tel"]} ({c["tel_hours"]})<br>'
-            f'이메일 {c["email"]}<br>'
-            f'직업정보제공사업: {c["job_report_no"]}<br>'
-            f'개인정보책임자: {c["privacy_officer"]}</div></div>')
+            f'이메일 {c["email"]} · 개인정보책임자 {c["privacy_officer"]}</div></div>')
     return f"""<footer class="site-footer"><div class="footer-in">{col_html}{info}</div>
 <div class="foot-bottom"><span class="foot-age">19+ 만 19세 이상 이용</span><br>
 {AGE_NOTICE}<br><br>© {c['name']}. All rights reserved.</div></footer>"""

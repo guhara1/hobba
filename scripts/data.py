@@ -7,17 +7,17 @@
 COMPANY = {
     "name": "호빠클럽",
     "brand_en": "HOBBA CLUB",
-    "domain": "hobba.club",
-    "url": "https://hobba.club",
-    "legal_name": "호빠클럽",
-    "ceo": "운영팀",
-    "biz_no": "000-00-00000",
-    "job_report_no": "신고 진행 중",
-    "address": "대한민국",
-    "tel": "0000-0000",
-    "tel_hours": "평일 11:00~20:00",
-    "email": "help@hobba.club",
-    "privacy_officer": "운영팀",
+    "domain": "hobba.club",          # TODO 확인: 실제 도메인
+    "url": "https://hobba.club",     # TODO 확인: 실제 도메인
+    "legal_name": "YH LAB",
+    "ceo": "김수환",
+    "biz_no": "815-26-00585",
+    "job_report_no": "J1802020260002",
+    "address": "경기도 파주시 청석로 268",
+    "tel": "0508-202-4690",
+    "tel_hours": "평일 10:00~19:00",
+    "email": "help@hobba.club",      # TODO 확인: 실제 이메일
+    "privacy_officer": "김수환",      # TODO 확인: 개인정보책임자(기본=대표)
     "tagline": "만 19세 이상 성인 구직자를 위한 호빠알바 채용정보 플랫폼",
 }
 
