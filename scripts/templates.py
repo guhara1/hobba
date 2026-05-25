@@ -146,6 +146,8 @@ th{color:var(--g1);font-weight:700}
   padding:3px 12px;color:var(--g1);font-weight:700;font-size:12px;margin-bottom:10px}
 
 section{margin-bottom:64px}
+/* CWV: 뷰포트 밖 반복 블록 렌더 스킵(LCP↓·메인스레드↓), 실측 후 크기 기억 */
+.note-card,.card,details,.site-footer{content-visibility:auto;contain-intrinsic-size:auto 280px}
 @media(max-width:1100px){
   .nav-main,.nav-right{display:none}
   .hamburger{display:flex}
@@ -347,7 +349,7 @@ def footer_html():
 JS = """
 window.__om=function(){document.getElementById('mp').classList.add('open');document.getElementById('mov').classList.add('open')};
 window.__cm=function(){document.getElementById('mp').classList.remove('open');document.getElementById('mov').classList.remove('open')};
-document.querySelectorAll('#mp a').forEach(function(a){a.addEventListener('click',window.__cm)});
+(window.requestIdleCallback||function(f){setTimeout(f,1)})(function(){document.querySelectorAll('#mp a').forEach(function(a){a.addEventListener('click',window.__cm)})});
 """
 
 

@@ -98,6 +98,24 @@ def build_manifest():
     write("/site.webmanifest", m, do_min=False)
 
 
+def build_headers():
+    # Cloudflare Pages _headers: 정적자원 장기 캐시 + 보안/성능 헤더
+    txt = (
+        "/*\n"
+        "  X-Content-Type-Options: nosniff\n"
+        "  Referrer-Policy: strict-origin-when-cross-origin\n"
+        "  X-Frame-Options: SAMEORIGIN\n"
+        "  Permissions-Policy: geolocation=(), microphone=(), camera=()\n"
+        "  Strict-Transport-Security: max-age=31536000; includeSubDomains\n\n"
+        "/assets/*\n"
+        "  Cache-Control: public, max-age=31536000, immutable\n\n"
+        "/favicon.svg\n"
+        "  Cache-Control: public, max-age=604800\n\n"
+        "/site.webmanifest\n"
+        "  Cache-Control: public, max-age=604800\n")
+    write("/_headers", txt, do_min=False)
+
+
 def build_favicon():
     svg = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">'
            '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">'
@@ -131,13 +149,14 @@ def main():
     build_rss()
     build_robots()
     build_manifest()
+    build_headers()
     build_favicon()
     os.makedirs(os.path.join(ROOT, "assets"), exist_ok=True)
     build_png(os.path.join(ROOT, "assets", "og.png"))
     print(f"✅ {len(pages)} HTML 페이지 생성 완료")
     for rel, _ in sorted(pages):
         print("  ", "/" if rel == "/index.html" else "/" + rel[:-len('index.html')].lstrip('/'))
-    print("✅ sitemap.xml · sitemap1.xml · rss.xml · robots.txt · site.webmanifest · favicon.svg")
+    print("✅ sitemap.xml · sitemap1.xml · rss.xml · robots.txt · site.webmanifest · favicon.svg · _headers · assets/og.png")
 
 
 if __name__ == "__main__":
