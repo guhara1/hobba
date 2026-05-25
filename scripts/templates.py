@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """공통 템플릿: CSS_BASE · head() · header_html() · promo_bar() · footer_html() · page()"""
 import json
-from data import COMPANY, NAV_MAIN, NAV_AD, NAV_CONTACT, MOBILE_PRIMARY, AGE_NOTICE
+from data import COMPANY, NAV_MAIN, NAV_AD, NAV_CONTACT, MOBILE_PRIMARY, AGE_NOTICE, VERIFY
 
 # ─────────────────────────────────────────────────────────────
 # 디자인 시스템 (다크 + 골드 — 신뢰형 나이트 톤)
@@ -207,8 +207,10 @@ def head(title, desc, path, *, og_type="website", jsonld=None, verification=Fals
         metas.append(f'<meta property="og:updated_time" content="{modified}">')
         metas.append(f'<meta property="article:modified_time" content="{modified}">')
     if verification:
-        metas.append('<meta name="naver-site-verification" content="REPLACE_NAVER">')
-        metas.append('<meta name="google-site-verification" content="REPLACE_GOOGLE">')
+        if VERIFY.get("naver"):
+            metas.append(f'<meta name="naver-site-verification" content="{VERIFY["naver"]}">')
+        if VERIFY.get("google"):
+            metas.append(f'<meta name="google-site-verification" content="{VERIFY["google"]}">')
     graph = _base_graph()
     if jsonld:
         graph += jsonld if isinstance(jsonld, list) else [jsonld]

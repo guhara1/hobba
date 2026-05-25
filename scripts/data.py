@@ -29,6 +29,12 @@ AGE_NOTICE = ("본 사이트는 만 19세 이상 성인 구직자를 위한 채�
 # 사이트 최종 갱신일 (메타 dateModified·바이라인 표기용)
 LAST_UPDATED = "2026-05-25"
 
+# 사이트 인증코드 (나중에 발급 후 값만 채우면 자동으로 메타 태그 생성. 빈 값이면 미출력)
+VERIFY = {
+    "google": "",   # 구글 서치콘솔 google-site-verification 코드
+    "naver": "",    # 네이버 서치어드바이저 naver-site-verification 코드
+}
+
 # E-E-A-T: 작성·운영 주체(Who/How/Why) — 실제 운영 사실만 표기, 허위 이력·수치 금지
 EDITORIAL = {
     "byline": "호빠클럽 운영·편집팀",
