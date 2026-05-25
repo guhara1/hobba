@@ -112,9 +112,44 @@ def jobs():
         "/jobs/", body, jsonld=ld)
 
 
+# 섹션별 내부 링크 강화(롱테일 H2 + 맥락 링크). 현재 글은 제외해 중복 회피.
+_LONGTAIL = {
+    "/magazine/": ("호빠알바, 안전하게 시작하려면 무엇부터 확인해야 할까", [
+        ("안전센터 — 위험 신호 거르기", "/safety/"),
+        ("지원·면접 가이드", "/magazine/interview-guide/"),
+        ("근무조건·정산 정보 제대로 읽기", "/magazine/work-conditions/"),
+        ("안전한 구직 — 사기 거르는 기준", "/magazine/safe-job-search/"),
+        ("채용정보 보기", "/jobs/")]),
+    "/safety/": ("불법 요구·허위공고를 만났을 때 어디에 알리고 어떻게 대처할까", [
+        ("불법 요구 대처 절차", "/safety/illegal-demands/"),
+        ("허위공고 신고 방법", "/safety/report-fake/"),
+        ("안전한 면접 체크리스트", "/safety/interview-safety/"),
+        ("안전한 구직 가이드(매거진)", "/magazine/safe-job-search/"),
+        ("문의·신고하기", "/support/contact/")]),
+}
+
+
+def _author_box():
+    return (f'<div class="card" style="margin-top:28px"><span class="kicker">작성·검수</span>'
+            f'<h3 style="margin:8px 0">{EDITORIAL["byline"]}</h3>'
+            f'<p style="font-size:13.5px">{EDITORIAL["who"]}</p>'
+            f'<div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">'
+            f'<a class="btn btn-ghost" href="/about/">편집 원칙 보기</a>'
+            f'<a class="btn btn-ghost" href="/support/contact/">정정·제보 요청</a></div></div>')
+
+
+def _internal_links(base, slug):
+    h2, links = _LONGTAIL[base]
+    ls = "".join(f'<li style="margin-bottom:8px"><a href="{h}" style="color:var(--g1)">{n}</a></li>'
+                 for n, h in links if h.rstrip("/") != (base + slug).rstrip("/"))
+    return (f'<section style="margin-top:40px"><h2 style="font-size:20px">{h2}</h2>'
+            f'<ul style="margin-top:12px;padding-left:18px">{ls}</ul></section>')
+
+
 def _article_pages(store, base, label, ld_breadcrumb_label):
     out = []
     items = list(store.items())
+    is_safety = base == "/safety/"
     for i, (slug, a) in enumerate(items):
         toc = "".join(f'<li><a href="#s{j}">{t}</a></li>' for j, t in enumerate(a["toc"]))
         secs = ""
@@ -124,6 +159,18 @@ def _article_pages(store, base, label, ld_breadcrumb_label):
         rel = "".join(f'<a class="card" href="{base}{s}/" style="display:block">'
                       f'<span class="tag">{aa["tag"]}</span><h3 style="margin-top:10px">{aa["title"]}</h3></a>'
                       for s, aa in items if s != slug)
+
+        # YMYL 안전 글: 공식 출처 인용 블록
+        cite_block = ""
+        if is_safety:
+            cards = "".join(
+                f'<a class="card" href="{u}" target="_blank" rel="nofollow noopener" style="display:block">'
+                f'<h3 style="font-size:16px">{n}</h3><p style="font-size:13px;margin-top:6px">{d}</p></a>'
+                for n, d, u in TRUST_SOURCES)
+            cite_block = (f'<section style="margin-top:40px"><h2 style="font-size:20px">공식 상담·신고 창구</h2>'
+                          f'<p style="margin:8px 0 16px">이 글의 안전 안내는 아래 공식 기관 정보를 참고했습니다.</p>'
+                          f'<div class="grid g2">{cards}</div></section>')
+
         body = (
             f'<article class="wrap"><a href="{base}" style="color:var(--g1);font-size:13px">← {label}</a>'
             f'<span class="tag" style="margin:18px 0 14px;display:inline-block">{a["tag"]} · 읽기 {a["read"]}</span>'
@@ -136,17 +183,25 @@ def _article_pages(store, base, label, ld_breadcrumb_label):
             f'<ul style="margin-top:10px;padding-left:18px;color:var(--muted)">{toc}</ul></div>'
             f'{secs}'
             f'<div class="notice-box" style="margin-top:20px">{AGE_NOTICE}</div>'
+            f'{cite_block}'
+            f'{_internal_links(base, slug)}'
+            f'{_author_box()}'
             f'<section style="margin-top:44px"><h2 style="font-size:22px">함께 보기</h2>'
             f'<div class="grid g3" style="margin-top:16px">{rel}</div></section></article>'
         )
-        ld = [breadcrumb([("홈", "/"), (ld_breadcrumb_label, base), (a["title"], f"{base}{slug}/")]),
-              {"@type": "Article", "headline": a["title"], "description": a["desc"],
+        art = {"@type": "Article", "headline": a["title"], "description": a["desc"],
                "author": {"@type": "Organization", "@id": C["url"] + "/#org", "name": EDITORIAL["byline"]},
                "publisher": {"@id": C["url"] + "/#org"},
+               "reviewedBy": {"@type": "Organization", "@id": C["url"] + "/#org", "name": EDITORIAL["byline"]},
                "image": {"@id": C["url"] + "/#primaryimage"},
+               "articleSection": a["tag"],
                "datePublished": a["date"], "dateModified": LAST_UPDATED,
                "inLanguage": "ko-KR",
-               "mainEntityOfPage": C["url"] + f"{base}{slug}/"}]
+               "mainEntityOfPage": C["url"] + f"{base}{slug}/"}
+        if is_safety:
+            art["citation"] = [{"@type": "CreativeWork", "name": n, "url": u}
+                               for n, _, u in TRUST_SOURCES]
+        ld = [breadcrumb([("홈", "/"), (ld_breadcrumb_label, base), (a["title"], f"{base}{slug}/")]), art]
         out.append((f"{base}{slug}/index.html", page(
             f'{a["title"]} | {C["name"]} {label}', a["desc"], f"{base}{slug}/",
             body, og_type="article", jsonld=ld, modified=LAST_UPDATED)))
