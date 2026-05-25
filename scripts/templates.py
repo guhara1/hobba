@@ -154,6 +154,44 @@ a.card:hover,.card-h:hover{transform:translateY(-3px);border-color:rgba(230,200,
 .ad-banner .b-sample{position:absolute;top:14px;right:14px;font-size:10px;color:var(--dim);
   border:1px solid var(--line-2);border-radius:999px;padding:2px 8px}
 
+/* 메인 광고 쇼케이스 — 3등급 시각 차등 */
+/* VVIP: 골드 충진+글로우+랭킹넘버, 가장 큼 */
+.vvip-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.vvip-banner{position:relative;overflow:hidden;display:flex;flex-direction:column;min-height:190px;
+  padding:24px;border-radius:20px;border:1px solid rgba(230,200,148,.5);
+  background:linear-gradient(155deg,rgba(230,200,148,.20),rgba(138,106,56,.06) 62%),var(--surface-2);
+  box-shadow:0 22px 48px -26px rgba(200,156,92,.6);transition:transform .22s,box-shadow .22s}
+.vvip-banner:hover{transform:translateY(-4px);box-shadow:0 30px 64px -24px rgba(200,156,92,.8)}
+.vvip-banner::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:var(--grad)}
+.vvip-rank{position:absolute;top:6px;right:18px;font-family:"Cormorant Garamond",Georgia,serif;
+  font-style:italic;font-size:68px;line-height:1;color:rgba(230,200,148,.22)}
+.vvip-badge{align-self:flex-start;font-size:11px;font-weight:900;letter-spacing:.1em;padding:4px 12px;
+  border-radius:999px;background:var(--grad);color:#15100a;box-shadow:0 8px 18px -6px rgba(200,156,92,.85)}
+.vvip-banner .t{font-size:19px;font-weight:800;letter-spacing:-.02em;margin-top:12px}
+.vvip-banner .a{font-size:12.5px;color:var(--dim);margin-top:3px}
+.vvip-banner .c{margin-top:auto;padding-top:14px;font-size:13.5px;color:var(--g1);font-weight:600}
+/* VIP: 중간 — 골드 테두리, 랭킹 없음, 4열 */
+.vip-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:13px}
+.vip-banner{position:relative;display:flex;flex-direction:column;gap:5px;min-height:126px;padding:18px;
+  border-radius:15px;border:1px solid rgba(230,200,148,.28);
+  background:linear-gradient(160deg,var(--surface),var(--surface-2));
+  transition:transform .18s,border-color .18s}
+.vip-banner:hover{transform:translateY(-3px);border-color:var(--g2)}
+.vip-badge{align-self:flex-start;font-size:10.5px;font-weight:800;letter-spacing:.08em;padding:3px 10px;
+  border-radius:999px;color:var(--g1);border:1px solid rgba(230,200,148,.5);background:rgba(230,200,148,.08)}
+.vip-banner .t{font-size:15px;font-weight:700;margin-top:4px}
+.vip-banner .a{font-size:12px;color:var(--dim)}
+.vip-banner .c{margin-top:auto;font-size:12.5px;color:var(--muted)}
+/* 프리미엄(일반): 컴팩트 한 줄 */
+.prem-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.prem-banner{display:flex;align-items:center;gap:10px;padding:13px 16px;border-radius:12px;
+  border:1px solid var(--line);background:rgba(255,255,255,.02);transition:.15s}
+.prem-banner:hover{border-color:var(--line-2);background:rgba(255,255,255,.045)}
+.prem-banner .pb{font-size:10px;font-weight:700;color:var(--dim);border:1px solid var(--line-2);
+  border-radius:999px;padding:2px 8px;flex-shrink:0}
+.prem-banner .t{font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prem-banner .a{font-size:12px;color:var(--dim);margin-left:auto;flex-shrink:0}
+
 /* 19+ 성인 인증 게이트 */
 .agegate{position:fixed;inset:0;z-index:9999;background:rgba(6,6,11,.94);backdrop-filter:blur(10px);
   display:none;align-items:center;justify-content:center;padding:24px}
@@ -236,9 +274,11 @@ section{margin:0}
   .wrap{padding:52px 22px}
   .hero{padding-top:60px;padding-bottom:36px}
 }
-@media(max-width:900px){.ad-banner-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:900px){
+  .ad-banner-grid,.vvip-grid,.vip-grid,.prem-grid{grid-template-columns:repeat(2,1fr)}
+}
 @media(max-width:680px){
-  .g2,.g3,.footer-in,.ad-banner-grid{grid-template-columns:1fr}
+  .g2,.g3,.footer-in,.ad-banner-grid,.vvip-grid,.vip-grid,.prem-grid{grid-template-columns:1fr}
   .wrap{padding:48px 18px}
   .note-card{padding:22px;gap:16px}
   .note-num{font-size:34px;width:36px}

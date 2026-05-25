@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """페이지 빌더: 각 함수는 (path, html)를 반환."""
-from data import (COMPANY, JOBS, JOBS_AD_BANNERS, JOBS_FAQ, AD_PRODUCTS, AD_FAQ, AD_INQUIRY_TEL,
+from data import (COMPANY, JOBS_AD_BANNERS, HOME_ADS, JOBS_FAQ, AD_PRODUCTS, AD_FAQ, AD_INQUIRY_TEL,
                   AGE_NOTICE, EDITORIAL, TRUST_SOURCES, LAST_UPDATED)
 from content import MAGAZINE, SAFETY, NOTICES, SUPPORT_FAQ, POLICIES
 from templates import page, breadcrumb, faq_ld, webpage_ld
@@ -34,11 +34,32 @@ def _byline():
 
 
 def home():
-    job_cards = "".join(
-        f'<a class="card" href="/jobs/" style="display:block"><span class="tag">{j["tag"]}</span>'
-        f'<h3 style="margin:12px 0 8px">{j["title"]}</h3>'
-        f'<p style="font-size:13.5px">{j["area"]} · {j["type"]} · {j["pay"]}</p></a>'
-        for j in JOBS[:6])
+    A = HOME_ADS
+    vvip = "".join(
+        f'<a class="vvip-banner" href="/advertising/"><span class="vvip-rank">{b["rank"]}</span>'
+        f'<span class="vvip-badge">VVIP</span>'
+        f'<span class="t">{b["title"]}</span><span class="a">{b["area"]} · {b["tag"]}</span>'
+        f'<span class="c">{b["copy"]} →</span></a>' for b in A["vvip"])
+    vip = "".join(
+        f'<a class="vip-banner" href="/advertising/"><span class="vip-badge">VIP</span>'
+        f'<span class="t">{b["title"]}</span><span class="a">{b["area"]}</span>'
+        f'<span class="c">{b["copy"]}</span></a>' for b in A["vip"])
+    prem = "".join(
+        f'<a class="prem-banner" href="/advertising/"><span class="pb">프리미엄</span>'
+        f'<span class="t">{b["title"]}</span><span class="a">{b["area"]}</span></a>'
+        for b in A["premium"])
+    ad_showcase = (
+        '<section class="wrap" style="padding-top:0">'
+        '<div class="ad-row-head"><span class="lbl">VVIP 추천 광고</span>'
+        '<a href="/advertising/">광고 게재 안내 →</a></div>'
+        f'<div class="vvip-grid">{vvip}</div>'
+        '<div class="ad-row-head" style="margin-top:32px"><span class="lbl">VIP 광고</span></div>'
+        f'<div class="vip-grid">{vip}</div>'
+        '<div class="ad-row-head" style="margin-top:32px"><span class="lbl">프리미엄 광고</span></div>'
+        f'<div class="prem-grid">{prem}</div>'
+        '<p style="font-size:12px;color:var(--dim);margin-top:16px">※ 위 배너는 게재 형식을 보여주는 샘플입니다. '
+        '실제 광고는 매장의 광고 등록 후 등급(VVIP·VIP·프리미엄)별로 차등 노출됩니다.</p>'
+        '</section>')
     steps = [("01", "공고 탐색", "지역·형태별로 검수된 채용정보를 살펴봅니다."),
              ("02", "조건 확인", "업무·급여·정산 방식을 가이드와 함께 확인합니다."),
              ("03", "안전 점검", "안전센터 체크리스트로 위험 신호를 거릅니다."),
@@ -64,8 +85,7 @@ def home():
               '<a class="btn btn-gold" href="/jobs/">채용정보 보기</a>'
               '<a class="btn btn-ghost" href="/safety/">안전센터 둘러보기</a>',
               byline=_byline()) +
-        f'<section class="wrap" style="padding-top:0"><h2>최근 채용정보</h2>'
-        f'<div class="grid g3">{job_cards}</div></section>'
+        ad_showcase +
         f'<section class="wrap" style="padding-top:0"><span class="kicker">HOW IT WORKS</span>'
         f'<h2 style="margin:12px 0 24px">이렇게 이용하세요</h2>{step_html}</section>'
         f'<section class="wrap" style="padding-top:0"><span class="kicker">누가·어떻게·왜</span>'
