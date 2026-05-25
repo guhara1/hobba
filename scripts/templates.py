@@ -112,6 +112,19 @@ p{color:var(--muted)}
 .chip:hover{border-color:var(--g2);color:var(--g1)}
 .chip[aria-pressed=true]{background:var(--grad);color:#1a130a;border-color:transparent}
 .no-result{color:var(--dim);padding:24px 0;display:none}
+
+/* 19+ 성인 인증 게이트 */
+.agegate{position:fixed;inset:0;z-index:9999;background:rgba(5,5,10,.93);backdrop-filter:blur(8px);
+  display:none;align-items:center;justify-content:center;padding:24px}
+.agegate-box{max-width:440px;width:100%;background:linear-gradient(160deg,var(--surface),var(--surface-2));
+  border:1px solid var(--line);border-radius:20px;padding:40px 32px;text-align:center}
+.agegate-badge{width:74px;height:74px;border-radius:50%;background:var(--grad);color:#1a130a;
+  font-weight:900;font-size:24px;display:grid;place-items:center;margin:0 auto 20px}
+.agegate-box h2{font-size:22px;margin-bottom:14px}
+.agegate-box p{font-size:14px;margin-bottom:8px}
+.agegate-actions{display:flex;flex-direction:column;gap:10px;margin:26px 0 14px}
+.agegate-actions .btn{justify-content:center}
+.agegate-note{font-size:12px;color:var(--dim)}
 .notice-box{background:var(--grad-soft);border:1px solid rgba(195,154,92,.3);border-radius:14px;
   padding:18px 20px;font-size:13.5px;color:var(--text);line-height:1.7}
 details{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:0 20px;margin-bottom:10px}
@@ -353,14 +366,33 @@ def footer_html():
 {AGE_NOTICE}<br><br>© {c['name']}. All rights reserved.</div></footer>"""
 
 
+def age_gate():
+    return (
+        '<div id="agegate" class="agegate" role="dialog" aria-modal="true" aria-label="성인 인증">'
+        '<div class="agegate-box"><div class="agegate-badge">19+</div>'
+        '<h2>성인 인증이 필요합니다</h2>'
+        '<p>본 사이트는 만 19세 이상 성인 구직자를 위한 호빠알바 채용정보 플랫폼입니다.</p>'
+        '<p>만 19세 이상만 이용할 수 있으며, 휴대폰 본인인증 후 입장할 수 있습니다.</p>'
+        '<div class="agegate-actions">'
+        '<button class="btn btn-gold" onclick="window.__ageEnter()">휴대폰 본인인증하고 입장</button>'
+        '<button class="btn btn-ghost" onclick="window.__ageExit()">나가기</button></div>'
+        '<p class="agegate-note">만 19세 미만은 이용할 수 없습니다.</p></div></div>'
+        '<script>(function(){try{if(localStorage.getItem("hobba_adult")==="1")return}catch(e){}'
+        'var g=document.getElementById("agegate");if(g){g.style.display="flex";'
+        'document.documentElement.style.overflow="hidden"}})();</script>')
+
+
 JS = """
 window.__om=function(){document.getElementById('mp').classList.add('open');document.getElementById('mov').classList.add('open')};
 window.__cm=function(){document.getElementById('mp').classList.remove('open');document.getElementById('mov').classList.remove('open')};
+window.__ageClose=function(){try{localStorage.setItem('hobba_adult','1')}catch(e){}var g=document.getElementById('agegate');if(g)g.style.display='none';document.documentElement.style.overflow=''};
+window.__ageEnter=function(){if(typeof window.__kcpCert==='function'){window.__kcpCert();return}window.__ageClose()};
+window.__ageExit=function(){location.href='https://www.google.com'};
 (window.requestIdleCallback||function(f){setTimeout(f,1)})(function(){document.querySelectorAll('#mp a').forEach(function(a){a.addEventListener('click',window.__cm)})});
 """
 
 
 def page(title, desc, path, body, **kw):
-    return (head(title, desc, path, **kw) + "<body>" + promo_bar() + header_html() +
+    return (head(title, desc, path, **kw) + "<body>" + age_gate() + promo_bar() + header_html() +
             "<main>" + body + "</main>" + footer_html() +
             f"<script>{JS}</script></body></html>")
