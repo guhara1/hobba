@@ -553,10 +553,27 @@ def advertising_contact():
         "/advertising/contact/", body, jsonld=ld)
 
 
+def not_found():
+    body = (
+        '<section class="wrap" style="text-align:center;min-height:48vh">'
+        '<div class="serif" style="font-size:96px;color:var(--g2);line-height:1">404</div>'
+        '<h1 style="margin:8px 0 16px">페이지를 찾을 수 없습니다</h1>'
+        '<p class="note-text" style="margin:0 auto 26px">요청하신 페이지가 이동되었거나 존재하지 않습니다. 아래에서 원하시는 메뉴로 이동해 주세요.</p>'
+        '<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">'
+        '<a class="btn btn-gold" href="/">홈으로</a>'
+        '<a class="btn btn-ghost" href="/jobs/">채용정보</a>'
+        '<a class="btn btn-ghost" href="/safety/">안전센터</a>'
+        '<a class="btn btn-ghost" href="/support/contact/">문의하기</a></div></section>')
+    return "/404.html", page(
+        "페이지를 찾을 수 없습니다 (404) | 호빠클럽",
+        "요청하신 페이지를 찾을 수 없습니다. 호빠클럽 홈·채용정보·안전센터로 이동해 주세요.",
+        "/404.html", body)
+
+
 def all_pages():
     pages = [home(), jobs(), magazine_hub(), safety_hub(), support_hub(),
              notice_page(), faq_page(), support_contact(), about_page(),
-             advertising(), advertising_contact()]
+             advertising(), advertising_contact(), not_found()]
     pages += job_role_pages()
     pages += policy_pages()
     pages += _article_pages(MAGAZINE, "/magazine/", "매거진", "매거진")
