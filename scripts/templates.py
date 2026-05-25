@@ -136,6 +136,24 @@ a.card:hover,.card-h:hover{transform:translateY(-3px);border-color:rgba(230,200,
 .chip[aria-pressed=true]{background:var(--grad);color:#15100a;border-color:transparent}
 .no-result{color:var(--dim);padding:24px 0;display:none}
 
+/* 광고 배너(가로 4개) */
+.ad-row-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:14px}
+.ad-row-head .lbl{font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);font-weight:700}
+.ad-row-head a{font-size:13px;color:var(--g1);font-weight:600}
+.ad-banner-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.ad-banner{position:relative;display:flex;flex-direction:column;gap:8px;min-height:150px;
+  padding:20px;border-radius:var(--radius);border:1px solid rgba(230,200,148,.3);
+  background:linear-gradient(160deg,rgba(230,200,148,.12),rgba(138,106,56,.05)),var(--surface);
+  box-shadow:var(--shadow);transition:transform .2s,border-color .2s}
+.ad-banner:hover{transform:translateY(-3px);border-color:var(--g2)}
+.ad-banner .b-badge{align-self:flex-start;font-size:10.5px;font-weight:800;letter-spacing:.08em;
+  padding:3px 9px;border-radius:999px;background:var(--grad);color:#15100a}
+.ad-banner .b-title{font-size:16px;font-weight:800;margin-top:2px}
+.ad-banner .b-area{font-size:12.5px;color:var(--dim)}
+.ad-banner .b-copy{font-size:13px;color:var(--muted);margin-top:auto}
+.ad-banner .b-sample{position:absolute;top:14px;right:14px;font-size:10px;color:var(--dim);
+  border:1px solid var(--line-2);border-radius:999px;padding:2px 8px}
+
 /* 19+ 성인 인증 게이트 */
 .agegate{position:fixed;inset:0;z-index:9999;background:rgba(6,6,11,.94);backdrop-filter:blur(10px);
   display:none;align-items:center;justify-content:center;padding:24px}
@@ -218,8 +236,9 @@ section{margin:0}
   .wrap{padding:52px 22px}
   .hero{padding-top:60px;padding-bottom:36px}
 }
+@media(max-width:900px){.ad-banner-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:680px){
-  .g2,.g3,.footer-in{grid-template-columns:1fr}
+  .g2,.g3,.footer-in,.ad-banner-grid{grid-template-columns:1fr}
   .wrap{padding:48px 18px}
   .note-card{padding:22px;gap:16px}
   .note-num{font-size:34px;width:36px}

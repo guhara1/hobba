@@ -130,7 +130,6 @@ def build_favicon():
 PRIORITY = {
     "/": "1.0", "/jobs/": "0.9", "/magazine/": "0.9", "/safety/": "0.9",
     "/support/": "0.8", "/about/": "0.8", "/advertising/": "0.9", "/advertising/contact/": "0.8",
-    "/jobs/rookie/": "0.8", "/jobs/pro/": "0.8", "/jobs/ace/": "0.8",
 }
 
 

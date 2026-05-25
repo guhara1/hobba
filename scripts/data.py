@@ -67,12 +67,7 @@ TRUST_SOURCES = [
 #   오른쪽 광고 메뉴: 광고안내 / 광고문의(버튼)
 # ─────────────────────────────────────────────────────────────
 NAV_MAIN = [
-    {"label": "채용정보", "href": "/jobs/", "short": "채용", "children": [
-        {"label": "신입 선수 채용", "href": "/jobs/rookie/"},
-        {"label": "경력 선수 채용", "href": "/jobs/pro/"},
-        {"label": "에이스·팀장 채용", "href": "/jobs/ace/"},
-        {"label": "채용정보 전체 보기", "href": "/jobs/"},
-    ]},
+    {"label": "채용정보", "href": "/jobs/", "short": "채용"},
     {"label": "매거진", "href": "/magazine/", "short": "매거진", "children": [
         {"label": "선수 입문 가이드", "href": "/magazine/getting-started/"},
         {"label": "지원·면접 가이드", "href": "/magazine/interview-guide/"},
@@ -132,6 +127,14 @@ JOBS = [
 
 # /jobs 지역 필터에 노출할 순서(공고에 존재하는 지역만 칩으로 표시)
 JOB_REGION_ORDER = ["서울", "경기", "인천", "부산", "대전"]
+
+# /jobs 상단 광고 배너(샘플) — 가로 4개. 실제 매장 광고 게재 전 자리 표시.
+JOBS_AD_BANNERS = [
+    {"badge": "VVIP", "title": "강남 프리미엄 라운지", "area": "서울 강남", "copy": "신입 선수 환영 · 보장급 협의"},
+    {"badge": "VVIP", "title": "홍대 라운지", "area": "서울 마포", "copy": "주말 파트 가능 · 교육 지원"},
+    {"badge": "VVIP", "title": "부산 서면 클럽", "area": "부산 부산진", "copy": "경력 선수 우대 · TC+인센티브"},
+    {"badge": "VVIP", "title": "수원 인계동 매장", "area": "경기 수원", "copy": "초보 가능 · 자유 출근"},
+]
 
 # ─────────────────────────────────────────────────────────────
 # 채용 포지션별 고유 콘텐츠 (★도어웨이 회피 — 역할마다 업무·적성·급여가 실제로 다름)

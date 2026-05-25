@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """페이지 빌더: 각 함수는 (path, html)를 반환."""
-from data import (COMPANY, JOBS, JOB_REGION_ORDER, JOB_ROLES, JOBS_FAQ, AD_PRODUCTS, AD_FAQ,
+from data import (COMPANY, JOBS, JOBS_AD_BANNERS, JOBS_FAQ, AD_PRODUCTS, AD_FAQ,
                   AGE_NOTICE, EDITORIAL, TRUST_SOURCES, LAST_UPDATED)
 from content import MAGAZINE, SAFETY, NOTICES, SUPPORT_FAQ, POLICIES
 from templates import page, breadcrumb, faq_ld, webpage_ld
@@ -91,7 +91,22 @@ def home():
 
 
 def jobs():
-    # 공고에서 꼭 확인할 항목 (독자적·실용 콘텐츠)
+    # 상단: 광고 배너 가로 4개 (샘플)
+    banners = "".join(
+        f'<a class="ad-banner" href="/advertising/">'
+        f'<span class="b-sample">샘플</span><span class="b-badge">{b["badge"]}</span>'
+        f'<span class="b-title">{b["title"]}</span><span class="b-area">{b["area"]}</span>'
+        f'<span class="b-copy">{b["copy"]}</span></a>'
+        for b in JOBS_AD_BANNERS)
+    banner_section = (
+        '<section class="wrap" style="padding-top:0">'
+        '<div class="ad-row-head"><span class="lbl">추천 광고</span>'
+        '<a href="/advertising/">광고 게재 안내 →</a></div>'
+        f'<div class="ad-banner-grid">{banners}</div>'
+        '<p style="font-size:12px;color:var(--dim);margin-top:12px">※ 위 배너는 게재 형식을 보여주는 샘플입니다. 실제 광고는 매장의 광고 등록 후 노출됩니다.</p>'
+        '</section>')
+
+    # 하단: 콘텐츠 글
     checklist = [("01", "일의 성격", "무슨 일을 하는지 구체적으로 적혀 있는지 봅니다. 설명을 피하는 공고는 주의합니다."),
                  ("02", "수입 구조", "‘예상 수입’이 아닌 보장급이 얼마인지, TC·인센티브 산정을 확인합니다."),
                  ("03", "정산 주기", "일·주·월 중 언제, 어떤 방식으로 정산하는지 확인합니다."),
@@ -99,122 +114,52 @@ def jobs():
                  ("05", "계약 여부", "근로조건을 서면으로 남기는지 확인합니다.")]
     chk = "".join(_note(int(n), t, [d]) for n, t, d in checklist)
 
-    # 포지션별 안내 카드
-    role_cards = "".join(
-        f'<a class="card" href="/jobs/{s}/" style="display:block"><span class="tag">{r["name"]}</span>'
-        f'<h3 style="margin:12px 0 8px">{r["name"]} 채용</h3>'
-        f'<p style="font-size:13.5px">{r["lead"]}</p>'
-        f'<p style="margin-top:10px;color:var(--g1);font-size:13px">자세히 보기 →</p></a>'
-        for s, r in JOB_ROLES.items())
-
-    # 지역 필터(클라이언트 사이드 — 별도 색인 URL 없음, 도어웨이 회피)
-    regions = [r for r in JOB_REGION_ORDER if any(j["region"] == r for j in JOBS)]
-    chips = ('<button class="chip" aria-pressed="true" onclick="__jf(\'all\',this)">전체</button>' +
-             "".join(f'<button class="chip" aria-pressed="false" onclick="__jf(\'{r}\',this)">{r}'
-                     f' ({sum(1 for j in JOBS if j["region"] == r)})</button>' for r in regions))
-
-    # 최근 채용정보(데모 — ItemList. JobPosting 리치 스키마는 미사용)
-    job_cards = "".join(
-        f'<div class="card" data-region="{j["region"]}"><span class="tag">{j["tag"]}</span>'
-        f'<h3 style="margin:12px 0 8px">{j["title"]}</h3>'
-        f'<p style="font-size:13.5px">{j["area"]} · {j["type"]} · {j["pay"]}</p>'
-        f'<div style="margin-top:14px"><a class="btn btn-ghost" href="/advertising/contact/">매장 광고 문의</a></div></div>'
-        for j in JOBS)
-
-    filter_js = (
-        "<script>window.__jf=function(r,btn){"
-        "document.querySelectorAll('.filters .chip').forEach(function(c){c.setAttribute('aria-pressed','false')});"
-        "btn.setAttribute('aria-pressed','true');var n=0;"
-        "document.querySelectorAll('#joblist [data-region]').forEach(function(el){"
-        "var ok=(r==='all'||el.getAttribute('data-region')===r);el.style.display=ok?'':'none';if(ok)n++});"
-        "document.getElementById('nojob').style.display=n?'none':'block'};</script>")
+    content = (
+        '<article class="wrap" style="max-width:840px;padding-top:0">'
+        '<span class="kicker">채용정보 가이드</span>'
+        '<h2>호빠·호스트바 선수 채용, 시작 전에 알아두기</h2>'
+        '<div class="prose">'
+        '<p>호빠·호스트바 선수(남성 호스트)는 매장을 방문한 손님을 응대하며 대화와 서비스로 즐거운 시간을 만드는 일입니다. '
+        '경험이 없어도 교육을 통해 시작할 수 있고, 경력에 따라 단골 관리와 매출 기여로 더 높은 수입을 기대할 수 있습니다. '
+        '호빠클럽은 만 19세 이상만 이용하는 채용정보 플랫폼으로, 검수 정책에 따라 게재된 공고만 노출합니다.</p>'
+        '<p>매장마다 업무 범위·근무 형태·수입 구조가 다르므로, 지원 전에 공고를 정확히 읽고 면접에서 조건을 확인하는 것이 가장 중요합니다. '
+        '신입·경력 등 어떤 단계든 확인할 핵심은 같습니다 — 보장급·정산·근무 조건을 기록으로 남기세요.</p>'
+        '</div>'
+        '<h3 style="margin:30px 0 18px;font-size:19px">채용정보, 이 5가지를 먼저 확인하세요</h3>'
+        f'{chk}'
+        '<div class="prose" style="margin-top:30px">'
+        '<h2 style="font-size:24px">‘예상 수입’과 ‘보장급’은 다릅니다</h2>'
+        '<p>호스트 수입은 보통 보장급(일급)·TC(테이블 차지)·인센티브로 구성됩니다. 공고에 적힌 ‘예상 수입’은 최대치인 경우가 많으니, '
+        '보장급이 얼마인지와 TC·인센티브 산정 방식, 정산 주기·공제 항목을 기준으로 판단하세요. '
+        '자세한 내용은 <a href="/magazine/work-conditions/" style="color:var(--g1)">수입·정산 정보</a>에서 확인할 수 있습니다.</p>'
+        '<h2 style="font-size:24px;margin-top:28px">안전하게 지원하기</h2>'
+        '<p>정상적인 채용은 구직자에게 선불금·보증금을 먼저 요구하지 않습니다. 성매매를 암시하거나 불법 행위를 전제로 하는 제안은 '
+        '응할 의무가 없으며 즉시 신고할 수 있습니다. 지원 전 '
+        '<a href="/safety/interview-safety/" style="color:var(--g1)">안전한 면접 체크</a>와 '
+        '<a href="/magazine/interview-guide/" style="color:var(--g1)">지원·면접 가이드</a>를 함께 읽어 보세요.</p>'
+        '</div>'
+        f'<div class="notice-box" style="margin-top:24px">{AGE_NOTICE}</div>'
+        '</article>')
 
     body = (
-        _hero("채용정보", "포지션·지역별 호빠·호스트바 선수 채용",
-              "검수 정책에 따라 게재되는 호빠·호스트바 선수(남성 호스트) 채용정보입니다. 호빠알바 구인구직, 포지션마다 업무·수입 구조가 다르므로 지원 전 공고를 정확히 읽는 법부터 확인하세요.",
-              '<a class="btn btn-gold" href="/magazine/interview-guide/">지원·면접 가이드</a>'
-              '<a class="btn btn-ghost" href="/safety/">안전센터</a>',
+        _hero("채용정보", "호빠·호스트바 선수 채용",
+              "검수 정책에 따라 게재되는 호빠·호스트바 선수(남성 호스트) 채용정보입니다. 호빠알바 구인구직, 지원 전 알아둘 점을 정리했습니다.",
+              '<a class="btn btn-gold" href="/advertising/contact/">매장 광고 문의</a>'
+              '<a class="btn btn-ghost" href="/magazine/interview-guide/">지원·면접 가이드</a>',
               byline=_byline()) +
-        f'<section class="wrap" style="padding-top:0"><span class="kicker">공고 읽는 법</span>'
-        f'<h2 style="margin:12px 0 24px">채용정보, 이 5가지를 먼저 확인하세요</h2>{chk}</section>'
-        f'<section class="wrap" style="padding-top:0"><span class="kicker">포지션별 안내</span>'
-        f'<h2 style="margin:12px 0 12px">어떤 일을 찾고 있나요</h2>'
-        f'<p class="note-text" style="margin-bottom:24px">포지션에 따라 업무·적성·급여 구조가 다릅니다. 본인에게 맞는 자리를 골라 자세히 확인하세요.</p>'
-        f'<div class="grid g3">{role_cards}</div></section>'
-        f'<section class="wrap" style="padding-top:0"><span class="kicker">수입 구조 바로 알기</span>'
-        f'<h2 style="margin:12px 0 12px">‘예상 수입’과 ‘보장급’은 다릅니다</h2>'
-        f'<p class="note-text">공고에 적힌 예상 수입은 최대치인 경우가 많습니다. 보장급·TC·인센티브와 정산 주기·공제 항목을 기준으로 판단하세요. '
-        f'자세한 내용은 <a href="/magazine/work-conditions/" style="color:var(--g1)">수입·정산 정보</a>에서 확인할 수 있습니다.</p></section>'
-        f'<section class="wrap" style="padding-top:0"><h2>최근 채용정보</h2>'
-        f'<p style="margin-bottom:18px;font-size:13px;color:var(--dim)">지역을 선택해 채용정보를 좁혀 보세요. 아래는 게재 형식을 보여주는 예시이며, 실제 공고는 매장의 광고 등록 후 노출됩니다.</p>'
-        f'<div class="filters" role="group" aria-label="지역 필터">{chips}</div>'
-        f'<div id="joblist" class="grid g2">{job_cards}</div>'
-        f'<p id="nojob" class="no-result">선택한 지역에 표시할 채용정보가 없습니다.</p>{filter_js}</section>'
-        f'<section class="wrap" style="padding-top:0"><div class="notice-box">{AGE_NOTICE}</div></section>' +
+        banner_section + content +
         _faq_section(JOBS_FAQ) +
         f'<section class="wrap" style="padding-top:0">{_author_box()}</section>'
     )
-    item_list = {"@type": "ItemList", "name": "호스트바 선수 채용 포지션",
-                 "itemListElement": [
-                     {"@type": "ListItem", "position": i + 1, "name": f'{r["name"]} 채용',
-                      "url": C["url"] + f"/jobs/{s}/"}
-                     for i, (s, r) in enumerate(JOB_ROLES.items())]}
-    ld = [webpage_ld("/jobs/", "호빠알바 채용정보", "포지션·형태별 호빠알바 채용정보",
+    ld = [webpage_ld("/jobs/", "호빠·호스트바 선수 채용", "호빠·호스트바 선수 채용정보와 지원 가이드",
                      modified=LAST_UPDATED),
           breadcrumb([("홈", "/"), ("채용정보", "/jobs/")]),
           {"@type": "CollectionPage", "name": "채용정보", "url": C["url"] + "/jobs/"},
-          item_list, faq_ld(JOBS_FAQ)]
+          faq_ld(JOBS_FAQ)]
     return "/jobs/index.html", page(
         "호빠·호스트바 선수 채용 — 호빠알바 구인구직 | 호빠클럽",
-        "호빠·호스트바 선수(남성 호스트) 채용정보. 신입·경력·에이스 포지션별 안내와 공고 읽는 법, 수입 구조, 지원 전 체크리스트를 제공하는 호빠알바 구인구직. 만 19세 이상 대상.",
+        "호빠·호스트바 선수(남성 호스트) 채용정보. 공고 읽는 법, 수입 구조, 안전하게 지원하는 법을 안내하는 호빠알바 구인구직. 만 19세 이상 대상.",
         "/jobs/", body, jsonld=ld, modified=LAST_UPDATED)
-
-
-def job_role_pages():
-    out = []
-    items = list(JOB_ROLES.items())
-    for slug, r in items:
-        def ul(arr):
-            return '<ul style="margin:10px 0 0;padding-left:18px;color:var(--muted)">' + \
-                   "".join(f'<li style="margin-bottom:6px">{x}</li>' for x in arr) + "</ul>"
-        others = "".join(
-            f'<a class="card" href="/jobs/{s}/" style="display:block"><span class="tag">{rr["name"]}</span>'
-            f'<h3 style="margin-top:10px">{rr["name"]} 채용</h3></a>'
-            for s, rr in items if s != slug)
-        body = (
-            _hero(f'채용정보 · {r["name"]}', f'{r["name"]} 채용 안내',
-                  r["lead"],
-                  '<a class="btn btn-gold" href="/magazine/interview-guide/">지원·면접 가이드</a>'
-                  '<a class="btn btn-ghost" href="/jobs/">채용정보 전체</a>',
-                  byline=_byline()) +
-            f'<section class="wrap" style="padding-top:0;max-width:840px">'
-            f'<h2 style="font-size:22px">주요 업무</h2>{ul(r["duties"])}'
-            f'<h2 style="font-size:22px;margin-top:32px">적성·필요 역량</h2>{ul(r["aptitude"])}'
-            f'<h2 style="font-size:22px;margin-top:32px">근무 형태</h2><p style="margin-top:10px">{r["formats"]}</p>'
-            f'<h2 style="font-size:22px;margin-top:32px">수입 구조</h2><p style="margin-top:10px">{r["pay"]}</p>'
-            f'<h2 style="font-size:22px;margin-top:32px">지원 시 확인할 점</h2>{ul(r["checks"])}'
-            f'<div class="notice-box" style="margin-top:20px">{AGE_NOTICE} 위험 신호 점검은 '
-            f'<a href="/safety/interview-safety/" style="color:var(--g1)">안전한 면접 체크</a>를 참고하세요.</div></section>'
-            + _faq_section(r["faq"], title=f'{r["name"]} 자주 묻는 질문') +
-            f'<section class="wrap" style="padding-top:0">{_author_box()}</section>'
-            f'<section class="wrap" style="padding-top:0"><h2 style="font-size:22px">다른 포지션 보기</h2>'
-            f'<div class="grid g2" style="margin-top:16px">{others}</div></section>'
-        )
-        ld = [webpage_ld(f"/jobs/{slug}/", f'{r["name"]} 채용 안내', r["lead"], modified=LAST_UPDATED),
-              breadcrumb([("홈", "/"), ("채용정보", "/jobs/"), (f'{r["name"]} 채용', f"/jobs/{slug}/")]),
-              {"@type": "Article", "headline": f'{r["name"]} 채용 안내', "description": r["lead"],
-               "author": {"@type": "Organization", "@id": C["url"] + "/#org", "name": EDITORIAL["byline"]},
-               "publisher": {"@id": C["url"] + "/#org"},
-               "reviewedBy": {"@type": "Organization", "@id": C["url"] + "/#org", "name": EDITORIAL["byline"]},
-               "image": {"@id": C["url"] + "/#primaryimage"},
-               "datePublished": "2026-05-20", "dateModified": LAST_UPDATED, "inLanguage": "ko-KR",
-               "mainEntityOfPage": C["url"] + f"/jobs/{slug}/"},
-              faq_ld(r["faq"])]
-        out.append((f"/jobs/{slug}/index.html", page(
-            f'{r["name"]} 채용 — 호빠·호스트바 선수 모집(호빠알바) | 호빠클럽',
-            f'호빠·호스트바 {r["name"]} 채용 안내. {r["lead"]} 업무·적성·근무 형태·수입 구조와 지원 시 확인할 점을 정리한 호빠알바 구인구직.',
-            f"/jobs/{slug}/", body, jsonld=ld, modified=LAST_UPDATED)))
-    return out
 
 
 # 섹션별 내부 링크 강화(롱테일 H2 + 맥락 링크). 현재 글은 제외해 중복 회피.
@@ -574,7 +519,6 @@ def all_pages():
     pages = [home(), jobs(), magazine_hub(), safety_hub(), support_hub(),
              notice_page(), faq_page(), support_contact(), about_page(),
              advertising(), advertising_contact(), not_found()]
-    pages += job_role_pages()
     pages += policy_pages()
     pages += _article_pages(MAGAZINE, "/magazine/", "매거진", "매거진")
     pages += _article_pages(SAFETY, "/safety/", "안전센터", "안전센터")
