@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 """페이지 빌더: 각 함수는 (path, html)를 반환."""
-from data import COMPANY, JOBS, AD_PRODUCTS, AD_FAQ, AGE_NOTICE
+from data import (COMPANY, JOBS, AD_PRODUCTS, AD_FAQ, AGE_NOTICE,
+                  EDITORIAL, TRUST_SOURCES, LAST_UPDATED)
 from content import MAGAZINE, SAFETY, NOTICES, SUPPORT_FAQ, POLICIES
-from templates import page, breadcrumb, faq_ld
+from templates import page, breadcrumb, faq_ld, webpage_ld
 
 C = COMPANY
 
@@ -26,6 +27,12 @@ def _faq_section(pairs, title="자주 묻는 질문"):
 
 
 # ─────────────────────────────────────────────────────────────
+def _byline():
+    return (f'<p style="margin-top:18px;font-size:13px;color:var(--dim)">'
+            f'작성·검수 <a href="/about/" style="color:var(--g1)">{EDITORIAL["byline"]}</a>'
+            f' · 최종 업데이트 {LAST_UPDATED}</p>')
+
+
 def home():
     job_cards = "".join(
         f'<a class="card" href="/jobs/" style="display:block"><span class="tag">{j["tag"]}</span>'
@@ -37,25 +44,50 @@ def home():
              ("03", "안전 점검", "안전센터 체크리스트로 위험 신호를 거릅니다."),
              ("04", "지원·문의", "공고 안내에 따라 지원하거나 문의합니다.")]
     step_html = "".join(_note(int(n), t, [d]) for n, t, d in steps)
+
+    # Who / How / Why (E-E-A-T, 2025.12 가이드라인)
+    whw = "".join(_note(i + 1, t, [d]) for i, (t, d) in enumerate([
+        ("누가 만드나요 (Who)", EDITORIAL["who"]),
+        ("어떻게 만드나요 (How)", EDITORIAL["how"]),
+        ("왜 만드나요 (Why)", EDITORIAL["why"])]))
+
+    # 외부 권위 출처(신뢰 신호)
+    src = "".join(
+        f'<a class="card" href="{u}" target="_blank" rel="nofollow noopener" style="display:block">'
+        f'<h3 style="font-size:16px">{n}</h3><p style="font-size:13px;margin-top:6px">{d}</p></a>'
+        for n, d, u in TRUST_SOURCES)
+
     body = (
         _hero("HOBBA CLUB",
               '안전하게 시작하는 <span class="gradtext">호빠알바 채용정보</span>',
-              "호빠클럽은 만 19세 이상 성인 구직자를 위한 채용정보 플랫폼입니다. 검수된 공고와 안전 가이드로 더 안심하고 일자리를 찾으세요.",
+              "호빠클럽은 만 19세 이상 성인 구직자를 위한 채용정보 플랫폼입니다. 운영·편집팀이 직접 검수한 공고와 안전 가이드로 더 안심하고 일자리를 찾으세요.",
               '<a class="btn btn-gold" href="/jobs/">채용정보 보기</a>'
               '<a class="btn btn-ghost" href="/safety/">안전센터 둘러보기</a>') +
+        f'<section class="wrap" style="padding-top:0;margin-top:-32px">{_byline()}</section>'
         f'<section class="wrap" style="padding-top:0"><h2>최근 채용정보</h2>'
         f'<div class="grid g3">{job_cards}</div></section>'
         f'<section class="wrap" style="padding-top:0"><span class="kicker">HOW IT WORKS</span>'
         f'<h2 style="margin:12px 0 24px">이렇게 이용하세요</h2>{step_html}</section>'
+        f'<section class="wrap" style="padding-top:0"><span class="kicker">누가·어떻게·왜</span>'
+        f'<h2 style="margin:12px 0 12px">호빠클럽은 이렇게 만듭니다</h2>'
+        f'<p class="note-text" style="margin-bottom:24px">콘텐츠를 누가, 어떻게, 왜 만드는지 투명하게 공개합니다. '
+        f'자세한 편집 원칙은 <a href="/about/" style="color:var(--g1)">운영 정보</a>에서 확인하세요.</p>{whw}</section>'
+        f'<section class="wrap" style="padding-top:0"><span class="kicker">신뢰할 수 있는 도움</span>'
+        f'<h2 style="margin:12px 0 8px">공식 신고·상담 창구</h2>'
+        f'<p class="note-text" style="margin-bottom:20px">위급하거나 불법 요구를 받았다면 아래 공식 기관에서 도움을 받을 수 있습니다.</p>'
+        f'<div class="grid g2">{src}</div></section>'
         f'<section class="wrap" style="padding-top:0"><div class="notice-box">{AGE_NOTICE}</div></section>' +
         _faq_section(SUPPORT_FAQ[:5])
     )
-    ld = [{"@type": "CollectionPage", "name": C["name"], "url": C["url"] + "/"},
+    ld = [webpage_ld("/", f'{C["name"]} | 만 19세 이상 호빠알바 채용정보 플랫폼',
+                     '만 19세 이상 성인 구직자를 위한 호빠알바 채용정보 플랫폼.',
+                     published="2026-01-01", modified=LAST_UPDATED),
+          {"@type": "CollectionPage", "name": C["name"], "url": C["url"] + "/"},
           faq_ld(SUPPORT_FAQ[:5])]
     return "/index.html", page(
         f'{C["name"]} | 만 19세 이상 호빠알바 채용정보 플랫폼',
-        '만 19세 이상 성인 구직자를 위한 호빠알바 채용정보. 검수된 공고와 안전 가이드, 투명한 근무조건 정보를 제공하는 호빠클럽.',
-        "/", body, jsonld=ld, verification=True)
+        '만 19세 이상 성인 구직자를 위한 호빠알바 채용정보. 운영·편집팀이 직접 검수한 공고와 안전 가이드, 투명한 근무조건 정보를 제공하는 호빠클럽.',
+        "/", body, jsonld=ld, verification=True, modified=LAST_UPDATED)
 
 
 def jobs():
@@ -96,7 +128,10 @@ def _article_pages(store, base, label, ld_breadcrumb_label):
             f'<article class="wrap"><a href="{base}" style="color:var(--g1);font-size:13px">← {label}</a>'
             f'<span class="tag" style="margin:18px 0 14px;display:inline-block">{a["tag"]} · 읽기 {a["read"]}</span>'
             f'<h1>{a["title"]}</h1>'
-            f'<p style="margin:16px 0 26px">{a["desc"]}</p>'
+            f'<p style="margin:16px 0 8px">{a["desc"]}</p>'
+            f'<p style="font-size:13px;color:var(--dim);margin-bottom:26px">'
+            f'작성·검수 <a href="/about/" style="color:var(--g1)">{EDITORIAL["byline"]}</a>'
+            f' · 발행 {a["date"]} · 최종 업데이트 {LAST_UPDATED}</p>'
             f'<div class="card" style="margin-bottom:32px"><strong>목차</strong>'
             f'<ul style="margin-top:10px;padding-left:18px;color:var(--muted)">{toc}</ul></div>'
             f'{secs}'
@@ -106,13 +141,15 @@ def _article_pages(store, base, label, ld_breadcrumb_label):
         )
         ld = [breadcrumb([("홈", "/"), (ld_breadcrumb_label, base), (a["title"], f"{base}{slug}/")]),
               {"@type": "Article", "headline": a["title"], "description": a["desc"],
-               "author": {"@type": "Organization", "name": C["name"]},
+               "author": {"@type": "Organization", "@id": C["url"] + "/#org", "name": EDITORIAL["byline"]},
                "publisher": {"@id": C["url"] + "/#org"},
-               "datePublished": a["date"], "dateModified": a["date"],
+               "image": {"@id": C["url"] + "/#primaryimage"},
+               "datePublished": a["date"], "dateModified": LAST_UPDATED,
+               "inLanguage": "ko-KR",
                "mainEntityOfPage": C["url"] + f"{base}{slug}/"}]
         out.append((f"{base}{slug}/index.html", page(
             f'{a["title"]} | {C["name"]} {label}', a["desc"], f"{base}{slug}/",
-            body, og_type="article", jsonld=ld)))
+            body, og_type="article", jsonld=ld, modified=LAST_UPDATED)))
     return out
 
 
@@ -232,6 +269,37 @@ def policy_pages():
     return out
 
 
+def about_page():
+    whw = "".join(f'<section style="margin-bottom:28px"><h2 style="font-size:22px">{t}</h2>'
+                  f'<p style="margin-top:8px">{d}</p></section>'
+                  for t, d in [("누가 만드나요 (Who)", EDITORIAL["who"]),
+                               ("어떻게 만드나요 (How)", EDITORIAL["how"]),
+                               ("왜 만드나요 (Why)", EDITORIAL["why"])])
+    policy = "".join(_note(i + 1, t, [d]) for i, (t, d) in enumerate(EDITORIAL["policy"]))
+    contact = (f'<div class="card"><h3>운영·연락처</h3>'
+               f'<p style="margin-top:10px;font-size:14px">{C["name"]} · 대표 {C["ceo"]}<br>'
+               f'고객센터 {C["tel"]} ({C["tel_hours"]})<br>이메일 {C["email"]}<br>'
+               f'개인정보책임자 {C["privacy_officer"]}</p>'
+               f'<div style="margin-top:14px"><a class="btn btn-ghost" href="/support/contact/">문의하기</a></div></div>')
+    body = (
+        _hero("운영 정보", "운영 정보·편집 원칙",
+              f'호빠클럽 콘텐츠를 누가, 어떻게, 왜 만드는지 투명하게 공개합니다.') +
+        f'<section class="wrap" style="padding-top:0;max-width:840px">{_byline()}{whw}</section>'
+        f'<section class="wrap" style="padding-top:0"><h2>편집 원칙</h2>{policy}</section>'
+        f'<section class="wrap" style="padding-top:0;max-width:840px">{contact}'
+        f'<div class="notice-box" style="margin-top:20px">{AGE_NOTICE}</div></section>'
+    )
+    ld = [webpage_ld("/about/", "운영 정보·편집 원칙", "호빠클럽 운영 주체와 편집 원칙 안내",
+                     modified=LAST_UPDATED),
+          breadcrumb([("홈", "/"), ("운영 정보", "/about/")]),
+          {"@type": "AboutPage", "name": "운영 정보·편집 원칙", "url": C["url"] + "/about/",
+           "publisher": {"@id": C["url"] + "/#org"}}]
+    return "/about/index.html", page(
+        "운영 정보·편집 원칙 — 누가·어떻게·왜 | 호빠클럽",
+        "호빠클럽 운영·편집팀, 콘텐츠 검수 방식, 편집 독립성·정정 정책과 연락처를 안내합니다. 누가·어떻게·왜 만드는지 투명하게 공개합니다.",
+        "/about/", body, jsonld=ld, modified=LAST_UPDATED)
+
+
 def advertising():
     # 상품 표
     rows = "".join(
@@ -327,7 +395,7 @@ def advertising_contact():
 
 def all_pages():
     pages = [home(), jobs(), magazine_hub(), safety_hub(), support_hub(),
-             notice_page(), faq_page(), support_contact(),
+             notice_page(), faq_page(), support_contact(), about_page(),
              advertising(), advertising_contact()]
     pages += policy_pages()
     pages += _article_pages(MAGAZINE, "/magazine/", "매거진", "매거진")

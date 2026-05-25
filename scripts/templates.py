@@ -154,9 +154,12 @@ section{margin-bottom:64px}
 """
 
 # ─────────────────────────────────────────────────────────────
-def head(title, desc, path, *, og_type="website", jsonld=None, verification=False):
+def head(title, desc, path, *, og_type="website", jsonld=None, verification=False,
+         modified=None, image="/assets/og.png", image_alt=None):
     c = COMPANY
     url = c["url"] + path
+    img = c["url"] + image
+    alt = image_alt or f'{c["name"]} — {c["tagline"]}'
     metas = [
         '<meta charset="utf-8">',
         '<meta name="viewport" content="width=device-width,initial-scale=1">',
@@ -177,14 +180,24 @@ def head(title, desc, path, *, og_type="website", jsonld=None, verification=Fals
         f'<meta property="og:title" content="{title}">',
         f'<meta property="og:description" content="{desc}">',
         f'<meta property="og:url" content="{url}">',
-        f'<meta property="og:image" content="{c["url"]}/assets/og.png">',
+        f'<meta property="og:image" content="{img}">',
+        f'<meta property="og:image:secure_url" content="{img}">',
+        '<meta property="og:image:type" content="image/png">',
+        '<meta property="og:image:width" content="1200">',
+        '<meta property="og:image:height" content="630">',
+        f'<meta property="og:image:alt" content="{alt}">',
         '<meta name="twitter:card" content="summary_large_image">',
         f'<meta name="twitter:title" content="{title}">',
         f'<meta name="twitter:description" content="{desc}">',
+        f'<meta name="twitter:image" content="{img}">',
+        f'<meta name="twitter:image:alt" content="{alt}">',
         '<link rel="icon" href="/favicon.svg" type="image/svg+xml">',
         '<link rel="manifest" href="/site.webmanifest">',
         f'<link rel="alternate" type="application/rss+xml" title="{c["name"]} 매거진" href="/rss.xml">',
     ]
+    if modified:
+        metas.append(f'<meta property="og:updated_time" content="{modified}">')
+        metas.append(f'<meta property="article:modified_time" content="{modified}">')
     if verification:
         metas.append('<meta name="naver-site-verification" content="REPLACE_NAVER">')
         metas.append('<meta name="google-site-verification" content="REPLACE_GOOGLE">')
@@ -199,15 +212,43 @@ def head(title, desc, path, *, og_type="website", jsonld=None, verification=Fals
 
 def _base_graph():
     c = COMPANY
+    og = {"@type": "ImageObject", "@id": c["url"] + "/#primaryimage",
+          "url": c["url"] + "/assets/og.png", "width": 1200, "height": 630,
+          "caption": f'{c["name"]} — {c["tagline"]}'}
+    logo = {"@type": "ImageObject", "@id": c["url"] + "/#logo",
+            "url": c["url"] + "/favicon.svg", "caption": c["name"]}
     return [
         {"@type": "Organization", "@id": c["url"] + "/#org", "name": c["name"],
          "legalName": c["legal_name"], "url": c["url"], "email": c["email"],
-         "description": c["tagline"]},
+         "description": c["tagline"], "logo": logo, "image": og,
+         "foundingDate": "2026", "knowsAbout": ["호빠알바 채용정보", "구직자 안전", "채용광고 검수"],
+         "contactPoint": {"@type": "ContactPoint", "contactType": "customer service",
+                          "email": c["email"], "availableLanguage": "Korean"}},
         {"@type": "WebSite", "@id": c["url"] + "/#site", "name": c["name"], "url": c["url"],
-         "publisher": {"@id": c["url"] + "/#org"},
+         "inLanguage": "ko-KR", "publisher": {"@id": c["url"] + "/#org"},
          "potentialAction": {"@type": "SearchAction",
                              "target": c["url"] + "/jobs/?q={query}", "query-input": "required name=query"}},
+        og, logo,
     ]
+
+
+def webpage_ld(path, name, desc, *, published=None, modified=None, breadcrumb_node=None):
+    """선호 이미지(primaryImageOfPage) + 갱신일을 명시한 WebPage 노드."""
+    c = COMPANY
+    node = {"@type": "WebPage", "@id": c["url"] + path + "#webpage",
+            "url": c["url"] + path, "name": name, "description": desc,
+            "isPartOf": {"@id": c["url"] + "/#site"},
+            "inLanguage": "ko-KR",
+            "primaryImageOfPage": {"@id": c["url"] + "/#primaryimage"},
+            "image": {"@id": c["url"] + "/#primaryimage"},
+            "publisher": {"@id": c["url"] + "/#org"}}
+    if published:
+        node["datePublished"] = published
+    if modified:
+        node["dateModified"] = modified
+    if breadcrumb_node:
+        node["breadcrumb"] = breadcrumb_node
+    return node
 
 
 def breadcrumb(items):
@@ -276,7 +317,8 @@ def footer_html():
     c = COMPANY
     cols = [
         ("채용·콘텐츠", [("채용정보", "/jobs/"), ("매거진", "/magazine/"),
-                     ("안전센터", "/safety/"), ("공지사항", "/support/notice/")]),
+                     ("안전센터", "/safety/"), ("운영 정보", "/about/"),
+                     ("공지사항", "/support/notice/")]),
         ("고객·정책", [("자주 묻는 질문", "/support/faq/"), ("문의하기", "/support/contact/"),
                    ("이용약관", "/policy/terms/"), ("개인정보처리방침", "/policy/privacy/"),
                    ("청소년 보호정책", "/policy/youth/")]),

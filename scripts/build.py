@@ -9,6 +9,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from data import COMPANY
 from content import MAGAZINE, NOTICES
 from pages import all_pages
+from og import build_png
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 C = COMPANY
@@ -110,7 +111,7 @@ def build_favicon():
 # 광고/문의 폼 priorities
 PRIORITY = {
     "/": "1.0", "/jobs/": "0.9", "/magazine/": "0.9", "/safety/": "0.9",
-    "/support/": "0.8", "/advertising/": "0.9", "/advertising/contact/": "0.8",
+    "/support/": "0.8", "/about/": "0.8", "/advertising/": "0.9", "/advertising/contact/": "0.8",
 }
 
 
@@ -130,6 +131,8 @@ def main():
     build_robots()
     build_manifest()
     build_favicon()
+    os.makedirs(os.path.join(ROOT, "assets"), exist_ok=True)
+    build_png(os.path.join(ROOT, "assets", "og.png"))
     print(f"✅ {len(pages)} HTML 페이지 생성 완료")
     for rel, _ in sorted(pages):
         print("  ", "/" if rel == "/index.html" else "/" + rel[:-len('index.html')].lstrip('/'))
