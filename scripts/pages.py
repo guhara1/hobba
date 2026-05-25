@@ -55,12 +55,15 @@ def home():
         for b in A["premium"]) + '</div>'
     ad_showcase = (
         '<section class="wrap" style="padding-top:0">'
-        '<div class="ad-row-head"><span class="lbl">VVIP 추천 광고</span>'
+        '<div class="ad-row-head"><span class="lbl vvip"><span class="ic">👑</span>'
+        '<span class="tx-vvip">VVIP 추천 광고</span></span>'
         '<a href="/advertising/">광고 게재 안내 →</a></div>'
         f'<div class="vvip-grid">{vvip}</div>'
-        '<div class="ad-row-head" style="margin-top:32px"><span class="lbl">VIP 광고</span></div>'
+        '<div class="ad-row-head" style="margin-top:32px"><span class="lbl vip"><span class="ic">💎</span>'
+        '<span class="tx-vip">VIP 광고</span></span></div>'
         f'<div class="vip-grid">{vip}</div>'
-        '<div class="ad-row-head" style="margin-top:32px"><span class="lbl">프리미엄 광고 · 한줄광고</span></div>'
+        '<div class="ad-row-head" style="margin-top:32px"><span class="lbl prem"><span class="ic">✨</span>'
+        '<span class="tx-prem">프리미엄 광고 · 한줄광고</span></span></div>'
         f'{prem}'
         '<p style="font-size:12px;color:var(--dim);margin-top:16px">※ 위 배너는 게재 형식을 보여주는 샘플입니다. '
         '실제 광고는 매장의 광고 등록 후 등급(VVIP·VIP·프리미엄)별로 차등 노출됩니다.</p>'
@@ -125,7 +128,8 @@ def jobs():
         for b in JOBS_AD_BANNERS)
     banner_section = (
         '<section class="wrap" style="padding-top:0">'
-        '<div class="ad-row-head"><span class="lbl">추천 광고</span>'
+        '<div class="ad-row-head"><span class="lbl vvip"><span class="ic">👑</span>'
+        '<span class="tx-vvip">VVIP 추천 광고</span></span>'
         '<a href="/advertising/">광고 게재 안내 →</a></div>'
         f'<div class="ad-banner-grid">{banners}</div>'
         '<p style="font-size:12px;color:var(--dim);margin-top:12px">※ 위 배너는 게재 형식을 보여주는 샘플입니다. 실제 광고는 매장의 광고 등록 후 노출됩니다.</p>'

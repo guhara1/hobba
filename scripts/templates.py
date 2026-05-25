@@ -137,9 +137,20 @@ a.card:hover,.card-h:hover{transform:translateY(-3px);border-color:rgba(230,200,
 .no-result{color:var(--dim);padding:24px 0;display:none}
 
 /* 광고 배너(가로 4개) */
-.ad-row-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:14px}
-.ad-row-head .lbl{font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);font-weight:700}
-.ad-row-head a{font-size:13px;color:var(--g1);font-weight:600}
+.ad-row-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.ad-row-head .lbl{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;letter-spacing:.1em;
+  text-transform:uppercase;font-weight:800}
+.ad-row-head a{font-size:13px;color:var(--g1);font-weight:600;white-space:nowrap}
+.lbl .ic{font-size:16px;line-height:1;display:inline-block;animation:adbob 2.4s ease-in-out infinite;
+  filter:drop-shadow(0 2px 6px rgba(200,156,92,.45))}
+.lbl .tx-vvip{background:linear-gradient(90deg,#e6c894,#fff1d2 30%,#c89c5c 55%,#e6c894);
+  background-size:220% auto;-webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;animation:shimmer 3.2s linear infinite}
+.lbl .tx-vip{color:var(--g1)}
+.lbl .tx-prem{color:var(--g2)}
+.lbl.vip .ic{animation-delay:.3s}.lbl.prem .ic{animation-delay:.6s}
+@keyframes adbob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes shimmer{0%{background-position:0 center}100%{background-position:220% center}}
 .ad-banner-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
 .ad-banner{position:relative;display:flex;flex-direction:column;gap:8px;min-height:150px;
   padding:20px;border-radius:var(--radius);border:1px solid rgba(230,200,148,.3);
