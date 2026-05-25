@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """페이지 빌더: 각 함수는 (path, html)를 반환."""
-from data import (COMPANY, JOBS, JOB_ROLES, JOBS_FAQ, AD_PRODUCTS, AD_FAQ, AGE_NOTICE,
-                  EDITORIAL, TRUST_SOURCES, LAST_UPDATED)
+from data import (COMPANY, JOBS, JOB_REGION_ORDER, JOB_ROLES, JOBS_FAQ, AD_PRODUCTS, AD_FAQ,
+                  AGE_NOTICE, EDITORIAL, TRUST_SOURCES, LAST_UPDATED)
 from content import MAGAZINE, SAFETY, NOTICES, SUPPORT_FAQ, POLICIES
 from templates import page, breadcrumb, faq_ld, webpage_ld
 
@@ -107,13 +107,27 @@ def jobs():
         f'<p style="margin-top:10px;color:var(--g1);font-size:13px">자세히 보기 →</p></a>'
         for s, r in JOB_ROLES.items())
 
+    # 지역 필터(클라이언트 사이드 — 별도 색인 URL 없음, 도어웨이 회피)
+    regions = [r for r in JOB_REGION_ORDER if any(j["region"] == r for j in JOBS)]
+    chips = ('<button class="chip" aria-pressed="true" onclick="__jf(\'all\',this)">전체</button>' +
+             "".join(f'<button class="chip" aria-pressed="false" onclick="__jf(\'{r}\',this)">{r}'
+                     f' ({sum(1 for j in JOBS if j["region"] == r)})</button>' for r in regions))
+
     # 최근 채용정보(데모 — ItemList. JobPosting 리치 스키마는 미사용)
     job_cards = "".join(
-        f'<div class="card"><span class="tag">{j["tag"]}</span>'
+        f'<div class="card" data-region="{j["region"]}"><span class="tag">{j["tag"]}</span>'
         f'<h3 style="margin:12px 0 8px">{j["title"]}</h3>'
         f'<p style="font-size:13.5px">{j["area"]} · {j["type"]} · {j["pay"]}</p>'
         f'<div style="margin-top:14px"><a class="btn btn-ghost" href="/advertising/contact/">매장 광고 문의</a></div></div>'
         for j in JOBS)
+
+    filter_js = (
+        "<script>window.__jf=function(r,btn){"
+        "document.querySelectorAll('.filters .chip').forEach(function(c){c.setAttribute('aria-pressed','false')});"
+        "btn.setAttribute('aria-pressed','true');var n=0;"
+        "document.querySelectorAll('#joblist [data-region]').forEach(function(el){"
+        "var ok=(r==='all'||el.getAttribute('data-region')===r);el.style.display=ok?'':'none';if(ok)n++});"
+        "document.getElementById('nojob').style.display=n?'none':'block'};</script>")
 
     body = (
         _hero("채용정보", "포지션·형태별 호빠알바 채용정보",
@@ -132,8 +146,10 @@ def jobs():
         f'<p class="note-text">공고에 적힌 예상 수입은 최대치인 경우가 많습니다. 기본급·정산 주기·공제 항목을 기준으로 판단하세요. '
         f'자세한 내용은 <a href="/magazine/work-conditions/" style="color:var(--g1)">근무조건·정산 정보</a>에서 확인할 수 있습니다.</p></section>'
         f'<section class="wrap" style="padding-top:0"><h2>최근 채용정보</h2>'
-        f'<p style="margin-bottom:18px;font-size:13px;color:var(--dim)">아래는 게재 형식을 보여주는 예시입니다. 실제 공고는 매장의 광고 등록 후 노출됩니다.</p>'
-        f'<div class="grid g2">{job_cards}</div></section>'
+        f'<p style="margin-bottom:18px;font-size:13px;color:var(--dim)">지역을 선택해 채용정보를 좁혀 보세요. 아래는 게재 형식을 보여주는 예시이며, 실제 공고는 매장의 광고 등록 후 노출됩니다.</p>'
+        f'<div class="filters" role="group" aria-label="지역 필터">{chips}</div>'
+        f'<div id="joblist" class="grid g2">{job_cards}</div>'
+        f'<p id="nojob" class="no-result">선택한 지역에 표시할 채용정보가 없습니다.</p>{filter_js}</section>'
         f'<section class="wrap" style="padding-top:0"><div class="notice-box">{AGE_NOTICE}</div></section>' +
         _faq_section(JOBS_FAQ) +
         f'<section class="wrap" style="padding-top:0">{_author_box()}</section>'
