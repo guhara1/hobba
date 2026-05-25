@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """페이지 빌더: 각 함수는 (path, html)를 반환."""
-from data import (COMPANY, JOBS_AD_BANNERS, HOME_ADS, JOBS_FAQ, AD_PRODUCTS, AD_FAQ, AD_INQUIRY_TEL,
+from data import (COMPANY, HOME_ADS, JOBS_FAQ, AD_PRODUCTS, AD_FAQ, AD_INQUIRY_TEL,
                   AGE_NOTICE, EDITORIAL, TRUST_SOURCES, LAST_UPDATED)
 from content import MAGAZINE, SAFETY, NOTICES, SUPPORT_FAQ, POLICIES
 from templates import page, breadcrumb, faq_ld, webpage_ld
@@ -33,7 +33,7 @@ def _byline():
             f' · 최종 업데이트 {LAST_UPDATED}</p>')
 
 
-def home():
+def _ad_showcase():
     A = HOME_ADS
     vvip = "".join(
         f'<a class="vvip-banner" href="/advertising/"><span class="vvip-rank">{b["rank"]}</span>'
@@ -53,7 +53,7 @@ def home():
         f'<span class="u {"tc" if b["unit"]=="TC" else "hr"}">{b["unit"]}</span>'
         f'<span class="pr">{b["price"]}</span></a>'
         for b in A["premium"]) + '</div>'
-    ad_showcase = (
+    return (
         '<section class="wrap" style="padding-top:0">'
         '<div class="ad-row-head"><span class="lbl vvip"><span class="ic">👑</span>'
         '<span class="tx-vvip">VVIP 추천 광고</span></span>'
@@ -68,6 +68,10 @@ def home():
         '<p style="font-size:12px;color:var(--dim);margin-top:16px">※ 위 배너는 게재 형식을 보여주는 샘플입니다. '
         '실제 광고는 매장의 광고 등록 후 등급(VVIP·VIP·프리미엄)별로 차등 노출됩니다.</p>'
         '</section>')
+
+
+def home():
+    ad_showcase = _ad_showcase()
     steps = [("01", "공고 탐색", "지역·형태별로 검수된 채용정보를 살펴봅니다."),
              ("02", "조건 확인", "업무·급여·정산 방식을 가이드와 함께 확인합니다."),
              ("03", "안전 점검", "안전센터 체크리스트로 위험 신호를 거릅니다."),
@@ -119,21 +123,8 @@ def home():
 
 
 def jobs():
-    # 상단: 광고 배너 가로 4개 (샘플)
-    banners = "".join(
-        f'<a class="ad-banner" href="/advertising/">'
-        f'<span class="b-sample">샘플</span><span class="b-badge">{b["badge"]}</span>'
-        f'<span class="b-title">{b["title"]}</span><span class="b-area">{b["area"]}</span>'
-        f'<span class="b-copy">{b["copy"]}</span></a>'
-        for b in JOBS_AD_BANNERS)
-    banner_section = (
-        '<section class="wrap" style="padding-top:0">'
-        '<div class="ad-row-head"><span class="lbl vvip"><span class="ic">👑</span>'
-        '<span class="tx-vvip">VVIP 추천 광고</span></span>'
-        '<a href="/advertising/">광고 게재 안내 →</a></div>'
-        f'<div class="ad-banner-grid">{banners}</div>'
-        '<p style="font-size:12px;color:var(--dim);margin-top:12px">※ 위 배너는 게재 형식을 보여주는 샘플입니다. 실제 광고는 매장의 광고 등록 후 노출됩니다.</p>'
-        '</section>')
+    # 상단: 메인과 동일한 3등급 광고 쇼케이스
+    banner_section = _ad_showcase()
 
     # 하단: 콘텐츠 글
     checklist = [("01", "일의 성격", "무슨 일을 하는지 구체적으로 적혀 있는지 봅니다. 설명을 피하는 공고는 주의합니다."),
