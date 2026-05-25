@@ -264,9 +264,15 @@ th{color:var(--g1);font-weight:700;background:rgba(255,255,255,.02);font-size:13
 .hp{position:absolute;left:-9999px;opacity:0}
 
 /* 본문 가독(article) */
-.prose{max-width:var(--measure)}
-.prose h2{font-size:clamp(21px,2.4vw,26px);margin:0 0 12px}
-.prose p{font-size:15.5px;line-height:1.85;margin-bottom:14px}
+.prose{max-width:var(--measure);font-size:16.5px}
+.prose h2{font-size:clamp(20px,2.4vw,25px);margin:0 0 14px;color:#fbf9ff;letter-spacing:-.02em;line-height:1.3}
+.prose p{font-size:16.5px;line-height:1.92;margin-bottom:17px;color:#ddd8e8;word-break:keep-all}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:#fff;font-weight:700}
+.prose a{color:var(--g1);text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px;text-decoration-color:rgba(230,200,148,.45)}
+.prose a:hover{text-decoration-color:var(--g1)}
+.prose section{margin-bottom:30px!important}
+.prose section:last-child{margin-bottom:0!important}
 .toc-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);padding:20px 24px}
 .toc-card strong{font-size:13px;letter-spacing:.04em;color:var(--g1);text-transform:uppercase}
 .toc-card ul{margin-top:12px;padding-left:18px}

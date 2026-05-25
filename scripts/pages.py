@@ -224,8 +224,8 @@ def _article_pages(store, base, label, ld_breadcrumb_label):
         toc = "".join(f'<li><a href="#s{j}">{t}</a></li>' for j, t in enumerate(a["toc"]))
         secs = ""
         for j, (h, paras) in enumerate(a["body"]):
-            ps = "".join(f"<p style='margin-bottom:12px'>{p}</p>" for p in paras)
-            secs += f'<section id="s{j}" style="margin-bottom:34px"><h2 style="font-size:24px">{h}</h2>{ps}</section>'
+            ps = "".join(f"<p>{p}</p>" for p in paras)
+            secs += f'<section id="s{j}"><h2>{h}</h2>{ps}</section>'
         rel = "".join(f'<a class="card" href="{base}{s}/" style="display:block">'
                       f'<span class="tag">{aa["tag"]}</span><h3 style="margin-top:10px">{aa["title"]}</h3></a>'
                       for s, aa in items if s != slug)
