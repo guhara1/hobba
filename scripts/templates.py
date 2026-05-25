@@ -279,6 +279,18 @@ th{color:var(--g1);font-weight:700;background:rgba(255,255,255,.02);font-size:13
 .prose a:hover{text-decoration-color:var(--g1)}
 .prose section{padding-bottom:28px;border-bottom:1px solid var(--line);margin-bottom:28px!important}
 .prose section:last-child{padding-bottom:0;border-bottom:none;margin-bottom:0!important}
+/* 함께 보기 (관련글 추천 리스트) */
+.rel-list{display:flex;flex-direction:column;gap:10px}
+.rel-item{display:flex;align-items:center;gap:13px;padding:15px 18px;border:1px solid var(--line);
+  border-radius:14px;background:linear-gradient(160deg,var(--surface),var(--surface-2));
+  transition:transform .16s,border-color .16s}
+.rel-item:hover{border-color:rgba(230,200,148,.34);transform:translateX(4px)}
+.rel-item .tag{flex:0 0 auto}
+.rel-item .rt{flex:1 1 auto;min-width:0;font-weight:700;font-size:15px;color:var(--text);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.01em}
+.rel-item .ra{flex:0 0 auto;color:var(--g1);font-weight:800;transition:transform .16s}
+.rel-item:hover .ra{transform:translateX(3px)}
+@media(max-width:560px){.rel-item .rt{white-space:normal}}
 .toc-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);padding:20px 24px}
 .toc-card strong{font-size:13px;letter-spacing:.04em;color:var(--g1);text-transform:uppercase}
 .toc-card ul{margin-top:12px;padding-left:18px}

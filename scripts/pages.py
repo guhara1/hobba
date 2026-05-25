@@ -226,9 +226,14 @@ def _article_pages(store, base, label, ld_breadcrumb_label):
         for j, (h, paras) in enumerate(a["body"]):
             ps = "".join(f"<p>{p}</p>" for p in paras)
             secs += f'<section id="s{j}"><h2>{h}</h2>{ps}</section>'
-        rel = "".join(f'<a class="card" href="{base}{s}/" style="display:block">'
-                      f'<span class="tag">{aa["tag"]}</span><h3 style="margin-top:10px">{aa["title"]}</h3></a>'
-                      for s, aa in items if s != slug)
+        others = [(s, aa) for s, aa in items if s != slug]
+        if others:
+            r = i % len(others)
+            others = others[r:] + others[:r]
+        rel = "".join(
+            f'<a class="rel-item" href="{base}{s}/"><span class="tag">{aa["tag"]}</span>'
+            f'<span class="rt">{aa["title"]}</span><span class="ra">→</span></a>'
+            for s, aa in others[:5])
 
         # YMYL 안전 글: 공식 출처 인용 블록
         cite_block = ""
@@ -256,8 +261,8 @@ def _article_pages(store, base, label, ld_breadcrumb_label):
             f'{cite_block}'
             f'{_internal_links(base, slug)}'
             f'{_author_box()}'
-            f'<section style="margin-top:48px"><h2 style="font-size:22px;margin-bottom:16px">함께 보기</h2>'
-            f'<div class="grid g3">{rel}</div></section></article>'
+            f'<section style="margin-top:46px"><h2 style="font-size:20px;margin-bottom:18px">함께 보기</h2>'
+            f'<div class="rel-list">{rel}</div></section></article>'
         )
         art = {"@type": "Article", "headline": a["title"], "description": a["desc"],
                "author": {"@type": "Organization", "@id": C["url"] + "/#org", "name": EDITORIAL["byline"]},
