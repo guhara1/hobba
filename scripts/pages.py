@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """페이지 빌더: 각 함수는 (path, html)를 반환."""
-from data import (COMPANY, JOBS, AD_PRODUCTS, AD_FAQ, AGE_NOTICE,
+from data import (COMPANY, JOBS, JOB_ROLES, JOBS_FAQ, AD_PRODUCTS, AD_FAQ, AGE_NOTICE,
                   EDITORIAL, TRUST_SOURCES, LAST_UPDATED)
 from content import MAGAZINE, SAFETY, NOTICES, SUPPORT_FAQ, POLICIES
 from templates import page, breadcrumb, faq_ld, webpage_ld
@@ -91,25 +91,114 @@ def home():
 
 
 def jobs():
-    cards = "".join(
+    # 공고에서 꼭 확인할 항목 (독자적·실용 콘텐츠)
+    checklist = [("01", "업무 범위", "무슨 일을 하는지 구체적으로 적혀 있는지 봅니다. 설명을 피하는 공고는 주의합니다."),
+                 ("02", "급여 구조", "‘예상 수입’이 아닌 기본급이 얼마인지부터 확인합니다."),
+                 ("03", "정산 주기", "일·주·월 중 언제, 어떤 방식으로 정산하는지 확인합니다."),
+                 ("04", "근무 시간", "출퇴근 시간과 휴게, 야간 비중을 따져 봅니다."),
+                 ("05", "계약 여부", "근로조건을 서면으로 남기는지 확인합니다.")]
+    chk = "".join(_note(int(n), t, [d]) for n, t, d in checklist)
+
+    # 포지션별 안내 카드
+    role_cards = "".join(
+        f'<a class="card" href="/jobs/{s}/" style="display:block"><span class="tag">{r["name"]}</span>'
+        f'<h3 style="margin:12px 0 8px">{r["name"]} 채용</h3>'
+        f'<p style="font-size:13.5px">{r["lead"]}</p>'
+        f'<p style="margin-top:10px;color:var(--g1);font-size:13px">자세히 보기 →</p></a>'
+        for s, r in JOB_ROLES.items())
+
+    # 최근 채용정보(데모 — ItemList. JobPosting 리치 스키마는 미사용)
+    job_cards = "".join(
         f'<div class="card"><span class="tag">{j["tag"]}</span>'
         f'<h3 style="margin:12px 0 8px">{j["title"]}</h3>'
         f'<p style="font-size:13.5px">{j["area"]} · {j["type"]} · {j["pay"]}</p>'
         f'<div style="margin-top:14px"><a class="btn btn-ghost" href="/advertising/contact/">매장 광고 문의</a></div></div>'
         for j in JOBS)
+
     body = (
-        _hero("채용정보", "지역·형태별 호빠알바 채용정보",
-              "검수 정책에 따라 게재된 채용정보입니다. 지원 전 ‘지원·면접 가이드’와 ‘안전한 면접 체크’를 함께 확인하세요.",
-              '<a class="btn btn-gold" href="/magazine/interview-guide/">지원·면접 가이드</a>') +
-        f'<section class="wrap" style="padding-top:0"><div class="grid g2">{cards}</div></section>'
-        f'<section class="wrap" style="padding-top:0"><div class="notice-box">{AGE_NOTICE}</div></section>'
+        _hero("채용정보", "포지션·형태별 호빠알바 채용정보",
+              "검수 정책에 따라 게재되는 채용정보입니다. 포지션마다 업무·급여 구조가 다르므로, 지원 전 공고를 정확히 읽는 법부터 확인하세요.",
+              '<a class="btn btn-gold" href="/magazine/interview-guide/">지원·면접 가이드</a>'
+              '<a class="btn btn-ghost" href="/safety/">안전센터</a>') +
+        f'<section class="wrap" style="padding-top:0;margin-top:-32px">{_byline()}</section>'
+        f'<section class="wrap" style="padding-top:0"><span class="kicker">공고 읽는 법</span>'
+        f'<h2 style="margin:12px 0 24px">채용정보, 이 5가지를 먼저 확인하세요</h2>{chk}</section>'
+        f'<section class="wrap" style="padding-top:0"><span class="kicker">포지션별 안내</span>'
+        f'<h2 style="margin:12px 0 12px">어떤 일을 찾고 있나요</h2>'
+        f'<p class="note-text" style="margin-bottom:24px">포지션에 따라 업무·적성·급여 구조가 다릅니다. 본인에게 맞는 자리를 골라 자세히 확인하세요.</p>'
+        f'<div class="grid g3">{role_cards}</div></section>'
+        f'<section class="wrap" style="padding-top:0"><span class="kicker">급여 구조 바로 알기</span>'
+        f'<h2 style="margin:12px 0 12px">‘예상 수입’과 ‘기본급’은 다릅니다</h2>'
+        f'<p class="note-text">공고에 적힌 예상 수입은 최대치인 경우가 많습니다. 기본급·정산 주기·공제 항목을 기준으로 판단하세요. '
+        f'자세한 내용은 <a href="/magazine/work-conditions/" style="color:var(--g1)">근무조건·정산 정보</a>에서 확인할 수 있습니다.</p></section>'
+        f'<section class="wrap" style="padding-top:0"><h2>최근 채용정보</h2>'
+        f'<p style="margin-bottom:18px;font-size:13px;color:var(--dim)">아래는 게재 형식을 보여주는 예시입니다. 실제 공고는 매장의 광고 등록 후 노출됩니다.</p>'
+        f'<div class="grid g2">{job_cards}</div></section>'
+        f'<section class="wrap" style="padding-top:0"><div class="notice-box">{AGE_NOTICE}</div></section>' +
+        _faq_section(JOBS_FAQ) +
+        f'<section class="wrap" style="padding-top:0">{_author_box()}</section>'
     )
-    ld = [breadcrumb([("홈", "/"), ("채용정보", "/jobs/")]),
-          {"@type": "CollectionPage", "name": "채용정보", "url": C["url"] + "/jobs/"}]
+    item_list = {"@type": "ItemList", "name": "호빠알바 채용 포지션",
+                 "itemListElement": [
+                     {"@type": "ListItem", "position": i + 1, "name": f'{r["name"]} 채용',
+                      "url": C["url"] + f"/jobs/{s}/"}
+                     for i, (s, r) in enumerate(JOB_ROLES.items())]}
+    ld = [webpage_ld("/jobs/", "호빠알바 채용정보", "포지션·형태별 호빠알바 채용정보",
+                     modified=LAST_UPDATED),
+          breadcrumb([("홈", "/"), ("채용정보", "/jobs/")]),
+          {"@type": "CollectionPage", "name": "채용정보", "url": C["url"] + "/jobs/"},
+          item_list, faq_ld(JOBS_FAQ)]
     return "/jobs/index.html", page(
-        "호빠알바 채용정보 — 지역·형태별 모집 공고 | 호빠클럽",
-        "전국 호빠알바 채용정보. 지역·근무형태별 모집 공고를 검수 정책에 따라 제공합니다. 만 19세 이상 성인 구직자 대상.",
-        "/jobs/", body, jsonld=ld)
+        "호빠알바 채용정보 — 포지션·형태별 모집과 공고 보는 법 | 호빠클럽",
+        "호빠알바 채용정보. 홀 스태프·매니저·사무 보조 포지션별 안내와 공고 읽는 법, 급여 구조, 지원 전 체크리스트를 제공합니다. 만 19세 이상 대상.",
+        "/jobs/", body, jsonld=ld, modified=LAST_UPDATED)
+
+
+def job_role_pages():
+    out = []
+    items = list(JOB_ROLES.items())
+    for slug, r in items:
+        def ul(arr):
+            return '<ul style="margin:10px 0 0;padding-left:18px;color:var(--muted)">' + \
+                   "".join(f'<li style="margin-bottom:6px">{x}</li>' for x in arr) + "</ul>"
+        others = "".join(
+            f'<a class="card" href="/jobs/{s}/" style="display:block"><span class="tag">{rr["name"]}</span>'
+            f'<h3 style="margin-top:10px">{rr["name"]} 채용</h3></a>'
+            for s, rr in items if s != slug)
+        body = (
+            _hero(f'채용정보 · {r["name"]}', f'{r["name"]} 채용 안내',
+                  r["lead"],
+                  '<a class="btn btn-gold" href="/magazine/interview-guide/">지원·면접 가이드</a>'
+                  '<a class="btn btn-ghost" href="/jobs/">채용정보 전체</a>') +
+            f'<section class="wrap" style="padding-top:0;margin-top:-32px">{_byline()}</section>'
+            f'<section class="wrap" style="padding-top:0;max-width:840px">'
+            f'<h2 style="font-size:22px">주요 업무</h2>{ul(r["duties"])}'
+            f'<h2 style="font-size:22px;margin-top:32px">적성·필요 역량</h2>{ul(r["aptitude"])}'
+            f'<h2 style="font-size:22px;margin-top:32px">근무 형태</h2><p style="margin-top:10px">{r["formats"]}</p>'
+            f'<h2 style="font-size:22px;margin-top:32px">급여 구조</h2><p style="margin-top:10px">{r["pay"]}</p>'
+            f'<h2 style="font-size:22px;margin-top:32px">지원 시 확인할 점</h2>{ul(r["checks"])}'
+            f'<div class="notice-box" style="margin-top:20px">{AGE_NOTICE} 위험 신호 점검은 '
+            f'<a href="/safety/interview-safety/" style="color:var(--g1)">안전한 면접 체크</a>를 참고하세요.</div></section>'
+            + _faq_section(r["faq"], title=f'{r["name"]} 자주 묻는 질문') +
+            f'<section class="wrap" style="padding-top:0">{_author_box()}</section>'
+            f'<section class="wrap" style="padding-top:0"><h2 style="font-size:22px">다른 포지션 보기</h2>'
+            f'<div class="grid g2" style="margin-top:16px">{others}</div></section>'
+        )
+        ld = [webpage_ld(f"/jobs/{slug}/", f'{r["name"]} 채용 안내', r["lead"], modified=LAST_UPDATED),
+              breadcrumb([("홈", "/"), ("채용정보", "/jobs/"), (f'{r["name"]} 채용', f"/jobs/{slug}/")]),
+              {"@type": "Article", "headline": f'{r["name"]} 채용 안내', "description": r["lead"],
+               "author": {"@type": "Organization", "@id": C["url"] + "/#org", "name": EDITORIAL["byline"]},
+               "publisher": {"@id": C["url"] + "/#org"},
+               "reviewedBy": {"@type": "Organization", "@id": C["url"] + "/#org", "name": EDITORIAL["byline"]},
+               "image": {"@id": C["url"] + "/#primaryimage"},
+               "datePublished": "2026-05-20", "dateModified": LAST_UPDATED, "inLanguage": "ko-KR",
+               "mainEntityOfPage": C["url"] + f"/jobs/{slug}/"},
+              faq_ld(r["faq"])]
+        out.append((f"/jobs/{slug}/index.html", page(
+            f'{r["name"]} 채용 — 업무·적성·급여 구조·지원 확인사항 | 호빠클럽',
+            f'호빠알바 {r["name"]} 채용 안내. {r["lead"]} 업무·적성·근무 형태·급여 구조와 지원 시 확인할 점을 정리했습니다.',
+            f"/jobs/{slug}/", body, jsonld=ld, modified=LAST_UPDATED)))
+    return out
 
 
 # 섹션별 내부 링크 강화(롱테일 H2 + 맥락 링크). 현재 글은 제외해 중복 회피.
@@ -452,6 +541,7 @@ def all_pages():
     pages = [home(), jobs(), magazine_hub(), safety_hub(), support_hub(),
              notice_page(), faq_page(), support_contact(), about_page(),
              advertising(), advertising_contact()]
+    pages += job_role_pages()
     pages += policy_pages()
     pages += _article_pages(MAGAZINE, "/magazine/", "매거진", "매거진")
     pages += _article_pages(SAFETY, "/safety/", "안전센터", "안전센터")
