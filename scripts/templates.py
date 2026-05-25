@@ -169,31 +169,31 @@ a.card:hover,.card-h:hover{transform:translateY(-3px);border-color:rgba(230,200,
 /* VVIP: 골드 충진+글로우+랭킹넘버, 가장 큼 */
 .vvip-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 .vvip-banner{position:relative;overflow:hidden;display:flex;flex-direction:column;min-height:190px;
-  padding:24px;border-radius:20px;border:1px solid rgba(230,200,148,.5);
-  background:linear-gradient(150deg,rgba(233,198,132,.34),rgba(158,104,52,.18) 55%,rgba(70,38,58,.16)),var(--surface-2);
-  box-shadow:0 22px 48px -26px rgba(200,156,92,.65);transition:transform .22s,box-shadow .22s}
+  padding:24px;border-radius:20px;border:1px solid rgba(238,205,140,.6);
+  background:radial-gradient(130% 150% at 0% 0%,rgba(244,210,142,.30),transparent 56%),linear-gradient(160deg,#2b2215,#191309);
+  box-shadow:0 22px 48px -26px rgba(200,156,92,.7);transition:transform .22s,box-shadow .22s}
 .vvip-banner:hover{transform:translateY(-4px);box-shadow:0 30px 64px -24px rgba(200,156,92,.8)}
 .vvip-banner::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:var(--grad)}
 .vvip-rank{position:absolute;top:6px;right:18px;font-family:"Cormorant Garamond",Georgia,serif;
-  font-style:italic;font-size:68px;line-height:1;color:rgba(230,200,148,.22)}
+  font-style:italic;font-size:68px;line-height:1;color:rgba(246,214,150,.30)}
 .vvip-badge{align-self:flex-start;font-size:11px;font-weight:900;letter-spacing:.1em;padding:4px 12px;
   border-radius:999px;background:var(--grad);color:#15100a;box-shadow:0 8px 18px -6px rgba(200,156,92,.85)}
-.vvip-banner .t{font-size:19px;font-weight:800;letter-spacing:-.02em;margin-top:12px}
-.vvip-banner .a{font-size:13px;color:#ece2cd;font-weight:500;margin-top:5px}
-.vvip-banner .c{margin-top:auto;padding-top:14px;font-size:13.5px;color:var(--g1);font-weight:700}
+.vvip-banner .t{font-size:19px;font-weight:800;letter-spacing:-.02em;margin-top:12px;color:#fdf6e7}
+.vvip-banner .a{font-size:13px;color:#e7d9b8;font-weight:500;margin-top:5px}
+.vvip-banner .c{margin-top:auto;padding-top:14px;font-size:13.5px;color:#f4ce86;font-weight:700}
 /* VIP: 중간 — 골드 테두리, 랭킹 없음, 4열 */
 .vip-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:13px}
 .vip-banner{position:relative;overflow:hidden;display:flex;flex-direction:column;gap:5px;min-height:128px;padding:18px;
-  border-radius:15px;border:1px solid rgba(230,200,148,.34);
-  background:linear-gradient(160deg,var(--surface),var(--surface-2));
+  border-radius:15px;border:1px solid rgba(230,200,148,.38);
+  background:linear-gradient(160deg,#242531,#191a25);
   transition:transform .18s,border-color .18s,box-shadow .18s}
 .vip-banner::before{content:"";position:absolute;left:0;right:0;top:0;height:2px;
   background:linear-gradient(90deg,var(--g2),transparent 72%)}
 .vip-banner:hover{transform:translateY(-3px);border-color:var(--g2);box-shadow:0 16px 36px -22px rgba(200,156,92,.5)}
 .vip-badge{align-self:flex-start;font-size:10.5px;font-weight:800;letter-spacing:.08em;padding:3px 10px;
   border-radius:999px;color:var(--g1);border:1px solid rgba(230,200,148,.5);background:rgba(230,200,148,.1)}
-.vip-banner .t{font-size:16px;font-weight:800;letter-spacing:-.01em;margin-top:5px;color:var(--text)}
-.vip-banner .a{font-size:12.5px;color:var(--muted)}
+.vip-banner .t{font-size:16px;font-weight:800;letter-spacing:-.01em;margin-top:5px;color:#f3f0fb}
+.vip-banner .a{font-size:12.5px;color:#bbb5c8}
 .vip-banner .c{margin-top:auto;font-size:13px;color:var(--g1);font-weight:600}
 /* 프리미엄(일반): 한줄광고 리스트형 */
 .linead{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface)}
