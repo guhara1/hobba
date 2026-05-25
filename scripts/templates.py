@@ -159,8 +159,8 @@ a.card:hover,.card-h:hover{transform:translateY(-3px);border-color:rgba(230,200,
 .vvip-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 .vvip-banner{position:relative;overflow:hidden;display:flex;flex-direction:column;min-height:190px;
   padding:24px;border-radius:20px;border:1px solid rgba(230,200,148,.5);
-  background:linear-gradient(155deg,rgba(230,200,148,.20),rgba(138,106,56,.06) 62%),var(--surface-2);
-  box-shadow:0 22px 48px -26px rgba(200,156,92,.6);transition:transform .22s,box-shadow .22s}
+  background:linear-gradient(150deg,rgba(233,198,132,.34),rgba(158,104,52,.18) 55%,rgba(70,38,58,.16)),var(--surface-2);
+  box-shadow:0 22px 48px -26px rgba(200,156,92,.65);transition:transform .22s,box-shadow .22s}
 .vvip-banner:hover{transform:translateY(-4px);box-shadow:0 30px 64px -24px rgba(200,156,92,.8)}
 .vvip-banner::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:var(--grad)}
 .vvip-rank{position:absolute;top:6px;right:18px;font-family:"Cormorant Garamond",Georgia,serif;
@@ -182,15 +182,25 @@ a.card:hover,.card-h:hover{transform:translateY(-3px);border-color:rgba(230,200,
 .vip-banner .t{font-size:15px;font-weight:700;margin-top:4px}
 .vip-banner .a{font-size:12px;color:var(--dim)}
 .vip-banner .c{margin-top:auto;font-size:12.5px;color:var(--muted)}
-/* 프리미엄(일반): 컴팩트 한 줄 */
-.prem-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.prem-banner{display:flex;align-items:center;gap:10px;padding:13px 16px;border-radius:12px;
-  border:1px solid var(--line);background:rgba(255,255,255,.02);transition:.15s}
-.prem-banner:hover{border-color:var(--line-2);background:rgba(255,255,255,.045)}
-.prem-banner .pb{font-size:10px;font-weight:700;color:var(--dim);border:1px solid var(--line-2);
-  border-radius:999px;padding:2px 8px;flex-shrink:0}
-.prem-banner .t{font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.prem-banner .a{font-size:12px;color:var(--dim);margin-left:auto;flex-shrink:0}
+/* 프리미엄(일반): 한줄광고 리스트형 */
+.linead{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface)}
+.linead a{display:flex;align-items:center;gap:14px;padding:14px 18px;border-bottom:1px solid var(--line);transition:background .13s}
+.linead a:last-child{border-bottom:none}
+.linead a:hover{background:rgba(230,200,148,.05)}
+.linead .nm{flex:0 0 92px;font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.linead .cp{flex:1 1 auto;min-width:0;color:var(--g1);font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.linead .ar{flex:0 0 auto;display:inline-flex;align-items:center;gap:4px;color:var(--dim);font-size:12.5px;white-space:nowrap}
+.linead .ar svg{opacity:.7}
+.linead .u{flex:0 0 auto;font-size:11px;font-weight:800;padding:3px 9px;border-radius:7px}
+.linead .u.tc{background:rgba(202,120,42,.22);color:#f0b277;border:1px solid rgba(202,120,42,.5)}
+.linead .u.hr{background:rgba(72,108,206,.22);color:#a9c2ff;border:1px solid rgba(72,108,206,.5)}
+.linead .pr{flex:0 0 92px;text-align:right;font-weight:800;font-size:14px;white-space:nowrap}
+@media(max-width:680px){
+  .linead a{flex-wrap:wrap;gap:8px 12px}
+  .linead .nm{flex-basis:auto}
+  .linead .cp{order:5;flex-basis:100%}
+  .linead .pr{flex-basis:auto;margin-left:auto}
+}
 
 /* 19+ 성인 인증 게이트 */
 .agegate{position:fixed;inset:0;z-index:9999;background:rgba(6,6,11,.94);backdrop-filter:blur(10px);
@@ -275,10 +285,10 @@ section{margin:0}
   .hero{padding-top:60px;padding-bottom:36px}
 }
 @media(max-width:900px){
-  .ad-banner-grid,.vvip-grid,.vip-grid,.prem-grid{grid-template-columns:repeat(2,1fr)}
+  .ad-banner-grid,.vvip-grid,.vip-grid{grid-template-columns:repeat(2,1fr)}
 }
 @media(max-width:680px){
-  .g2,.g3,.footer-in,.ad-banner-grid,.vvip-grid,.vip-grid,.prem-grid{grid-template-columns:1fr}
+  .g2,.g3,.footer-in,.ad-banner-grid,.vvip-grid,.vip-grid{grid-template-columns:1fr}
   .wrap{padding:48px 18px}
   .note-card{padding:22px;gap:16px}
   .note-num{font-size:34px;width:36px}

@@ -44,10 +44,15 @@ def home():
         f'<a class="vip-banner" href="/advertising/"><span class="vip-badge">VIP</span>'
         f'<span class="t">{b["title"]}</span><span class="a">{b["area"]}</span>'
         f'<span class="c">{b["copy"]}</span></a>' for b in A["vip"])
-    prem = "".join(
-        f'<a class="prem-banner" href="/advertising/"><span class="pb">프리미엄</span>'
-        f'<span class="t">{b["title"]}</span><span class="a">{b["area"]}</span></a>'
-        for b in A["premium"])
+    pin = ('<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor">'
+           '<path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z"/></svg>')
+    prem = '<div class="linead">' + "".join(
+        f'<a href="/advertising/"><span class="nm">{b["name"]}</span>'
+        f'<span class="cp">{b["copy"]}</span>'
+        f'<span class="ar">{pin}{b["area"]}</span>'
+        f'<span class="u {"tc" if b["unit"]=="TC" else "hr"}">{b["unit"]}</span>'
+        f'<span class="pr">{b["price"]}</span></a>'
+        for b in A["premium"]) + '</div>'
     ad_showcase = (
         '<section class="wrap" style="padding-top:0">'
         '<div class="ad-row-head"><span class="lbl">VVIP 추천 광고</span>'
@@ -55,8 +60,8 @@ def home():
         f'<div class="vvip-grid">{vvip}</div>'
         '<div class="ad-row-head" style="margin-top:32px"><span class="lbl">VIP 광고</span></div>'
         f'<div class="vip-grid">{vip}</div>'
-        '<div class="ad-row-head" style="margin-top:32px"><span class="lbl">프리미엄 광고</span></div>'
-        f'<div class="prem-grid">{prem}</div>'
+        '<div class="ad-row-head" style="margin-top:32px"><span class="lbl">프리미엄 광고 · 한줄광고</span></div>'
+        f'{prem}'
         '<p style="font-size:12px;color:var(--dim);margin-top:16px">※ 위 배너는 게재 형식을 보여주는 샘플입니다. '
         '실제 광고는 매장의 광고 등록 후 등급(VVIP·VIP·프리미엄)별로 차등 노출됩니다.</p>'
         '</section>')
