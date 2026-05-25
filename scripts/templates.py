@@ -371,7 +371,7 @@ def age_gate():
         '<div id="agegate" class="agegate" role="dialog" aria-modal="true" aria-label="성인 인증">'
         '<div class="agegate-box"><div class="agegate-badge">19+</div>'
         '<h2>성인 인증이 필요합니다</h2>'
-        '<p>본 사이트는 만 19세 이상 성인 구직자를 위한 호빠알바 채용정보 플랫폼입니다.</p>'
+        '<p>본 사이트는 만 19세 이상만 이용하는 호스트바 선수(남성 호스트) 채용정보 플랫폼입니다.</p>'
         '<p>만 19세 이상만 이용할 수 있으며, 휴대폰 본인인증 후 입장할 수 있습니다.</p>'
         '<div class="agegate-actions">'
         '<button class="btn btn-gold" onclick="window.__ageEnter()">휴대폰 본인인증하고 입장</button>'
