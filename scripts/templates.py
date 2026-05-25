@@ -192,9 +192,9 @@ a.card:hover,.card-h:hover{transform:translateY(-3px);border-color:rgba(230,200,
 .vip-banner:hover{transform:translateY(-3px);border-color:var(--g2);box-shadow:0 16px 36px -22px rgba(200,156,92,.5)}
 .vip-badge{align-self:flex-start;font-size:10.5px;font-weight:800;letter-spacing:.08em;padding:3px 10px;
   border-radius:999px;color:var(--g1);border:1px solid rgba(230,200,148,.5);background:rgba(230,200,148,.1)}
-.vip-banner .t{font-size:16px;font-weight:800;letter-spacing:-.01em;margin-top:5px;color:#f3f0fb}
-.vip-banner .a{font-size:12.5px;color:#bbb5c8}
-.vip-banner .c{margin-top:auto;font-size:13px;color:var(--g1);font-weight:600}
+.vip-banner .t{font-size:17px;font-weight:800;letter-spacing:-.01em;margin-top:6px;color:#fdf6e7}
+.vip-banner .a{font-size:13px;color:#e7d9b8;font-weight:500;margin-top:2px}
+.vip-banner .c{margin-top:auto;font-size:13px;color:#f4ce86;font-weight:700}
 /* 프리미엄(일반): 한줄광고 리스트형 */
 .linead{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface)}
 .linead a{display:flex;align-items:center;gap:14px;padding:14px 18px;border-bottom:1px solid var(--line);transition:background .13s}
