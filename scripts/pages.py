@@ -242,7 +242,7 @@ def _article_pages(store, base, label, ld_breadcrumb_label):
                           f'<div class="grid g2">{cards}</div></section>')
 
         body = (
-            f'<article class="wrap" style="max-width:840px">'
+            f'<div class="reading"><article class="reading-sheet">'
             f'<a href="{base}" style="color:var(--g1);font-size:13px;font-weight:600">← {label}</a>'
             f'<span class="tag" style="margin:20px 0 16px;display:inline-block">{a["tag"]} · 읽기 {a["read"]}</span>'
             f'<h1 style="font-size:clamp(28px,4vw,42px)">{a["title"]}</h1>'
@@ -257,7 +257,7 @@ def _article_pages(store, base, label, ld_breadcrumb_label):
             f'{_internal_links(base, slug)}'
             f'{_author_box()}'
             f'<section style="margin-top:48px"><h2 style="font-size:22px;margin-bottom:16px">함께 보기</h2>'
-            f'<div class="grid g3">{rel}</div></section></article>'
+            f'<div class="grid g3">{rel}</div></section></article></div>'
         )
         art = {"@type": "Article", "headline": a["title"], "description": a["desc"],
                "author": {"@type": "Organization", "@id": C["url"] + "/#org", "name": EDITORIAL["byline"]},
