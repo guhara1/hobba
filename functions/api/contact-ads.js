@@ -56,6 +56,10 @@ export async function onRequestPost(context) {
       });
     }
 
+    const nowKst = new Date(Date.now() + 9 * 3600 * 1000)
+      .toISOString().replace("T", " ").slice(0, 16);
+    const referer = clamp(request.headers.get("referer") || "", 200);
+
     const lines = [
       "<b>📩 호빠클럽 문의 접수</b>",
       type && `유형: ${type}`,
@@ -67,6 +71,9 @@ export async function onRequestPost(context) {
       period && `희망 기간: ${period}`,
       "",
       message,
+      "",
+      `🕒 ${nowKst} (KST)`,
+      referer && `🔗 ${referer}`,
     ].filter(Boolean);
     const text = lines.join("\n");
 
