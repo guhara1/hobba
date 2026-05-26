@@ -31,8 +31,8 @@ LAST_UPDATED = "2026-05-25"
 
 # 사이트 인증코드 (나중에 발급 후 값만 채우면 자동으로 메타 태그 생성. 빈 값이면 미출력)
 VERIFY = {
-    "google": "",   # 구글 서치콘솔 google-site-verification 코드
-    "naver": "",    # 네이버 서치어드바이저 naver-site-verification 코드
+    "google": "UntdCQYVU5o5nWCasUYl8ZsVz2XONj8gYnsSxddLyVA",
+    "naver": "fd1536379e7c81a71920006a40a828b30d128fa0",
 }
 
 # E-E-A-T: 작성·운영 주체(Who/How/Why) — 실제 운영 사실만 표기, 허위 이력·수치 금지
