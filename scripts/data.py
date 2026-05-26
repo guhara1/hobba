@@ -7,8 +7,8 @@
 COMPANY = {
     "name": "호빠클럽",
     "brand_en": "HOBBA CLUB",
-    "domain": "hobba.club",          # TODO 확인: 실제 도메인
-    "url": "https://hobba.club",     # TODO 확인: 실제 도메인
+    "domain": "hobbaclub.vip",
+    "url": "https://hobbaclub.vip",
     "legal_name": "YH LAB",
     "ceo": "김수환",
     "biz_no": "815-26-00585",
@@ -16,8 +16,8 @@ COMPANY = {
     "address": "경기도 파주시 청석로 268",
     "tel": "0508-202-4690",
     "tel_hours": "평일 10:00~19:00",
-    "email": "help@hobba.club",      # TODO 확인: 실제 이메일
-    "privacy_officer": "김수환",      # TODO 확인: 개인정보책임자(기본=대표)
+    "email": "help@hobbaclub.vip",   # TODO 확인: 실제 이메일(메일박스 개설 필요)
+    "privacy_officer": "김수환",
     "tagline": "만 19세 이상 호빠·호스트바 선수(남성 호스트) 채용정보 플랫폼",
 }
 

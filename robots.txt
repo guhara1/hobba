@@ -23,6 +23,6 @@ Allow: /
 User-agent: PerplexityBot
 Allow: /
 
-Sitemap: https://hobba.club/sitemap.xml
-Sitemap: https://hobba.club/sitemap1.xml
-Host: hobba.club
+Sitemap: https://hobbaclub.vip/sitemap.xml
+Sitemap: https://hobbaclub.vip/sitemap1.xml
+Host: hobbaclub.vip
