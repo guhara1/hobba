@@ -299,16 +299,23 @@ th{color:var(--g1);font-weight:700;background:rgba(255,255,255,.02);font-size:13
 
 /* 푸터 */
 .site-footer{border-top:1px solid var(--line);background:#070709;margin-top:24px}
-.footer-in{max-width:var(--maxw);margin:0 auto;padding:60px 24px 36px;
-  display:grid;grid-template-columns:1.5fr 1fr 1.3fr;gap:40px}
-.footer-in h4{font-size:12px;color:var(--g1);margin-bottom:16px;letter-spacing:.08em;text-transform:uppercase}
-.footer-in a{display:block;color:var(--muted);font-size:13.5px;padding:5px 0;transition:.13s}
-.footer-in a:hover{color:var(--g1)}
-.foot-info{font-size:12.5px;color:var(--dim);line-height:1.95}
-.foot-bottom{border-top:1px solid var(--line);padding:22px 24px;text-align:center;
-  font-size:12px;color:var(--dim);max-width:var(--maxw);margin:0 auto;line-height:1.7}
-.foot-age{display:inline-block;border:1px solid rgba(230,200,148,.3);border-radius:999px;
-  padding:4px 13px;color:var(--g1);font-weight:700;font-size:12px;margin-bottom:12px}
+.footer-grid{max-width:var(--maxw);margin:0 auto;padding:56px 24px 30px;
+  display:grid;grid-template-columns:1.7fr 1fr 1fr 1fr;gap:40px}
+.footer-brand .logo{margin-bottom:14px}
+.footer-brand p{font-size:13px;color:var(--muted);max-width:270px;line-height:1.75;margin:0 0 16px}
+.footer-col h4{font-size:12px;color:var(--g1);margin-bottom:14px;letter-spacing:.08em;text-transform:uppercase}
+.footer-col a{display:block;color:var(--muted);font-size:13.5px;padding:5px 0;transition:.13s}
+.footer-col a:hover{color:var(--g1)}
+.footer-col a.em{color:var(--text);font-weight:600}
+.footer-biz{max-width:var(--maxw);margin:0 auto;padding:20px 24px;border-top:1px solid var(--line);
+  font-size:12.5px;color:var(--dim);line-height:2}
+.footer-biz strong{color:var(--muted);font-weight:700}
+.foot-bottom{max-width:var(--maxw);margin:0 auto;padding:16px 24px 32px;border-top:1px solid var(--line);
+  font-size:12px;color:var(--dim);line-height:1.8}
+.foot-bottom a{color:var(--dim)}.foot-bottom a:hover{color:var(--g1)}
+.foot-bottom .sep{margin:0 8px;opacity:.4}
+.foot-age{display:inline-block;border:1px solid rgba(230,200,148,.32);border-radius:999px;
+  padding:4px 13px;color:var(--g1);font-weight:700;font-size:12px}
 
 /* 섹션 리듬 — .wrap 자체 패딩으로 일관 간격(이중 마진 제거) */
 section{margin:0}
@@ -317,7 +324,7 @@ section{margin:0}
 @media(max-width:1100px){
   .nav-main,.nav-right{display:none}
   .hamburger{display:flex}
-  .footer-in{grid-template-columns:1fr 1fr;gap:28px}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:28px}
   .wrap{padding:52px 22px}
   .hero{padding-top:60px;padding-bottom:36px}
 }
@@ -325,7 +332,7 @@ section{margin:0}
   .ad-banner-grid,.vvip-grid,.vip-grid{grid-template-columns:repeat(2,1fr)}
 }
 @media(max-width:680px){
-  .g2,.g3,.footer-in,.ad-banner-grid,.vvip-grid,.vip-grid{grid-template-columns:1fr}
+  .g2,.g3,.footer-grid,.ad-banner-grid,.vvip-grid,.vip-grid{grid-template-columns:1fr}
   .wrap{padding:48px 18px}
   .note-card{padding:22px;gap:16px}
   .note-num{font-size:34px;width:36px}
@@ -504,27 +511,37 @@ def promo_bar():
 def footer_html():
     c = COMPANY
     cols = [
-        ("채용·콘텐츠", [("채용정보", "/jobs/"), ("매거진", "/magazine/"),
-                     ("안전센터", "/safety/"), ("운영 정보", "/about/"),
-                     ("공지사항", "/support/notice/")]),
-        ("고객·정책", [("자주 묻는 질문", "/support/faq/"), ("문의하기", "/support/contact/"),
-                   ("이용약관", "/policy/terms/"), ("개인정보처리방침", "/policy/privacy/"),
-                   ("청소년 보호정책", "/policy/youth/")]),
+        ("서비스", [("채용정보", "/jobs/"), ("매거진", "/magazine/"),
+                 ("안전센터", "/safety/"), ("광고안내", "/advertising/")]),
+        ("고객지원", [("공지사항", "/support/notice/"), ("자주 묻는 질문", "/support/faq/"),
+                  ("문의하기", "/support/contact/"), ("광고문의", "/advertising/contact/")]),
+        ("회사·정책", [("운영 정보", "/about/"), ("이용약관", "/policy/terms/"),
+                   ("개인정보처리방침", "/policy/privacy/"), ("청소년 보호정책", "/policy/youth/")]),
     ]
     col_html = ""
     for title, links in cols:
-        ls = "".join(f'<a href="{h}">{n}</a>' for n, h in links)
-        col_html += f'<div><h4>{title}</h4>{ls}</div>'
-    info = (f'<div><h4>회사정보</h4><div class="foot-info">'
-            f'상호 {c["legal_name"]} ({c["name"]}) · 대표 {c["ceo"]}<br>'
-            f'사업자등록번호 {c["biz_no"]}<br>'
-            f'직업정보제공사업 신고 {c["job_report_no"]}<br>'
-            f'{c["address"]}<br>'
-            f'고객센터 {c["tel"]} ({c["tel_hours"]})<br>'
-            f'이메일 {c["email"]} · 개인정보책임자 {c["privacy_officer"]}</div></div>')
-    return f"""<footer class="site-footer"><div class="footer-in">{col_html}{info}</div>
-<div class="foot-bottom"><span class="foot-age">19+ 만 19세 이상 이용</span><br>
-{AGE_NOTICE}<br><br>© {c['name']}. All rights reserved.</div></footer>"""
+        ls = "".join(
+            f'<a href="{h}" class="em">{n}</a>' if n == "개인정보처리방침"
+            else f'<a href="{h}">{n}</a>' for n, h in links)
+        col_html += f'<div class="footer-col"><h4>{title}</h4>{ls}</div>'
+    brand = (f'<div class="footer-brand"><a class="logo" href="/">'
+             f'<span class="mark">H</span>{c["name"]}</a>'
+             f'<p>{c["tagline"]}. 검수된 공고와 안전 가이드를 제공합니다.</p>'
+             f'<span class="foot-age">19+ 만 19세 이상 이용</span></div>')
+    biz = (f'<div class="footer-biz">'
+           f'<strong>{c["legal_name"]}</strong> ({c["name"]}) · 대표 {c["ceo"]} · '
+           f'사업자등록번호 {c["biz_no"]}<br>'
+           f'직업정보제공사업 신고번호 {c["job_report_no"]} · {c["address"]}<br>'
+           f'고객센터 {c["tel"]} ({c["tel_hours"]}) · 이메일 {c["email"]} · '
+           f'개인정보 보호책임자 {c["privacy_officer"]}</div>')
+    bottom = (f'<div class="foot-bottom">{AGE_NOTICE}<br><br>'
+              f'© 2026 {c["name"]}(YH LAB). All rights reserved.'
+              f'<span class="sep">·</span><a href="/policy/privacy/">개인정보처리방침</a>'
+              f'<span class="sep">·</span><a href="/policy/terms/">이용약관</a>'
+              f'<span class="sep">·</span><a href="/sitemap.xml">사이트맵</a>'
+              f'<span class="sep">·</span><a href="/rss.xml">RSS</a></div>')
+    return (f'<footer class="site-footer"><div class="footer-grid">{brand}{col_html}</div>'
+            f'{biz}{bottom}</footer>')
 
 
 def age_gate():
