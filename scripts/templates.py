@@ -343,18 +343,19 @@ section{margin:0}
 
 # ─────────────────────────────────────────────────────────────
 def head(title, desc, path, *, og_type="website", jsonld=None, verification=False,
-         modified=None, image="/assets/og.png", image_alt=None):
+         modified=None, image="/assets/og.png", image_alt=None, noindex=False):
     c = COMPANY
     url = c["url"] + path
     img = c["url"] + image
     alt = image_alt or f'{c["name"]} — {c["tagline"]}'
+    robots = "noindex,follow" if noindex else "index,follow,max-image-preview:large"
     metas = [
         '<meta charset="utf-8">',
         '<meta name="viewport" content="width=device-width,initial-scale=1">',
         '<meta name="theme-color" content="#0b0b12">',
         '<meta name="format-detection" content="telephone=no">',
-        '<meta name="robots" content="index,follow,max-image-preview:large">',
-        '<meta name="googlebot" content="index,follow">',
+        f'<meta name="robots" content="{robots}">',
+        f'<meta name="googlebot" content="{robots}">',
         '<meta name="referrer" content="strict-origin-when-cross-origin">',
         f'<title>{title}</title>',
         f'<meta name="description" content="{desc}">',

@@ -33,26 +33,39 @@ def _byline():
             f' · 최종 업데이트 {LAST_UPDATED}</p>')
 
 
+def _promo_entries():
+    """배너 → 샘플 홍보 상세 페이지 항목. (id, 등급, 데이터)"""
+    A = HOME_ADS
+    out = []
+    for i, b in enumerate(A["vvip"]):
+        out.append((f"vvip-{i+1}", "VVIP", b))
+    for i, b in enumerate(A["vip"]):
+        out.append((f"vip-{i+1}", "VIP", b))
+    for i, b in enumerate(A["premium"]):
+        out.append((f"prem-{i+1}", "프리미엄", b))
+    return out
+
+
 def _ad_showcase():
     A = HOME_ADS
     vvip = "".join(
-        f'<a class="vvip-banner" href="/advertising/"><span class="vvip-rank">{b["rank"]}</span>'
+        f'<a class="vvip-banner" href="/promo/vvip-{i+1}/"><span class="vvip-rank">{b["rank"]}</span>'
         f'<span class="vvip-badge">VVIP</span>'
         f'<span class="t">{b["title"]}</span><span class="a">{b["area"]} · {b["tag"]}</span>'
-        f'<span class="c">{b["copy"]} →</span></a>' for b in A["vvip"])
+        f'<span class="c">{b["copy"]} →</span></a>' for i, b in enumerate(A["vvip"]))
     vip = "".join(
-        f'<a class="vip-banner" href="/advertising/"><span class="vip-badge">VIP</span>'
+        f'<a class="vip-banner" href="/promo/vip-{i+1}/"><span class="vip-badge">VIP</span>'
         f'<span class="t">{b["title"]}</span><span class="a">{b["area"]}</span>'
-        f'<span class="c">{b["copy"]}</span></a>' for b in A["vip"])
+        f'<span class="c">{b["copy"]}</span></a>' for i, b in enumerate(A["vip"]))
     pin = ('<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor">'
            '<path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z"/></svg>')
     prem = '<div class="linead">' + "".join(
-        f'<a href="/advertising/"><span class="nm">{b["name"]}</span>'
+        f'<a href="/promo/prem-{i+1}/"><span class="nm">{b["name"]}</span>'
         f'<span class="cp">{b["copy"]}</span>'
         f'<span class="ar">{pin}{b["area"]}</span>'
         f'<span class="u {"tc" if b["unit"]=="TC" else "hr"}">{b["unit"]}</span>'
         f'<span class="pr">{b["price"]}</span></a>'
-        for b in A["premium"]) + '</div>'
+        for i, b in enumerate(A["premium"])) + '</div>'
     return (
         '<section class="wrap" style="padding-top:0">'
         '<div class="ad-row-head"><span class="lbl vvip"><span class="ic">👑</span>'
@@ -540,6 +553,63 @@ def advertising_contact():
         "/advertising/contact/", body, jsonld=ld)
 
 
+def promo_pages():
+    """배너 클릭 시 보이는 샘플 홍보 상세 페이지 (noindex — 데모/기만 색인 방지)."""
+    BEN = {
+        "VVIP": ["메인 최상단 고정 노출 매장", "신입 선수 환영 · 체계적인 교육 제공",
+                 "보장급 + TC·인센티브 (면접 협의)", "자유 출근 · 스케줄 조율 가능"],
+        "VIP": ["검증된 운영 매장 · 단골 비중 안정", "초보 가능 · 교육 지원",
+                "TC·인센티브 + 보장급 협의", "유연한 근무 형태"],
+        "프리미엄": ["성실 근무 환영", "근무 조건 면접에서 협의", "자유로운 출근 가능"],
+    }
+    PAY = {"VVIP": "보장급 + TC·인센티브 (면접 협의)",
+           "VIP": "TC·인센티브 + 보장급 협의", "프리미엄": "면접 시 협의"}
+    out = []
+    for pid, tier, b in _promo_entries():
+        name = b.get("title") or b.get("name")
+        area = b["area"].replace("-", " ")
+        copy = b["copy"]
+        pay = (f'{b["unit"]} 기준 {b["price"]} (샘플)' if b.get("price") else PAY[tier])
+        ben = "".join(f"<li style='margin-bottom:6px'>{x}</li>" for x in BEN[tier])
+        info = [("등급", tier), ("지역", area), ("근무 형태", "야간 (정규·파트 협의)"),
+                ("수입 구조", pay), ("정산", "면접 시 안내"), ("연령", "만 19세 이상")]
+        rows = "".join(
+            f'<div style="display:flex;justify-content:space-between;gap:12px;'
+            f'border-top:1px solid var(--line);padding:11px 0">'
+            f'<span style="color:var(--dim);font-size:13.5px">{k}</span>'
+            f'<span style="font-weight:600;font-size:14px">{v}</span></div>' for k, v in info)
+        body = (
+            '<section class="wrap" style="max-width:840px">'
+            '<a href="/jobs/" style="color:var(--g1);font-size:13px;font-weight:600">← 채용정보</a>'
+            f'<div style="display:flex;gap:8px;align-items:center;margin:18px 0 8px">'
+            f'<span class="tag">{tier} 광고</span>'
+            f'<span class="tag" style="background:none;border-color:var(--line-2);color:var(--dim)">샘플</span></div>'
+            f'<h1 style="font-size:clamp(28px,4.5vw,44px)">{name}</h1>'
+            f'<p class="lead" style="margin:14px 0 8px">{area} · {copy}</p>'
+            '<div style="margin:22px 0 8px"><button class="btn btn-gold" type="button">📞 전화상담</button></div>'
+            '<p style="font-size:12.5px;color:var(--dim)">※ 본 페이지는 광고 게재 형식을 보여주는 <strong style="color:var(--muted)">샘플</strong>입니다. '
+            '실제 연락처와 상세 조건은 매장의 광고 등록 후 노출됩니다.</p>'
+            '<div class="grid g2" style="margin-top:30px;align-items:start">'
+            f'<div><h2 style="font-size:20px;margin-bottom:12px">모집 안내</h2>'
+            f'<p style="color:var(--muted);line-height:1.85;margin-bottom:14px">{name}에서 함께할 선수(남성 호스트)를 모집합니다. '
+            f'손님 응대와 대화·분위기 메이킹이 주 업무이며, 매장 교육과 선배의 도움을 받아 시작할 수 있습니다. '
+            f'지원 전 근무 조건과 수입 구조를 면접에서 꼭 확인하세요.</p>'
+            f'<h3 style="font-size:16px;margin:18px 0 10px">주요 혜택·조건</h3>'
+            f'<ul style="padding-left:18px;color:var(--muted)">{ben}</ul></div>'
+            f'<div class="card"><h3 style="font-size:15px;margin-bottom:6px">모집 정보</h3>{rows}'
+            f'<div style="margin-top:16px"><button class="btn btn-gold" type="button" style="width:100%;justify-content:center">📞 전화상담</button></div></div>'
+            '</div>'
+            f'<div class="notice-box" style="margin-top:26px">{AGE_NOTICE} 선불금·보증금 요구나 불법적인 요구가 있으면 응하지 말고 '
+            '<a href="/safety/" style="color:var(--g1)">안전센터</a>를 통해 신고하세요. 본 매장 정보는 검수 정책에 따라 게재됩니다.</div>'
+            '</section>')
+        ld = [breadcrumb([("홈", "/"), ("채용정보", "/jobs/"), (f"{name} (샘플)", f"/promo/{pid}/")])]
+        out.append((f"/promo/{pid}/index.html", page(
+            f'[{tier}] {name} — {area} 호스트바 선수 모집 (샘플) | 호빠클럽',
+            f'{name}({area}) 호스트바 선수 채용 샘플 광고. {copy} 광고 게재 형식을 보여주는 호빠클럽 샘플 페이지입니다.',
+            f"/promo/{pid}/", body, jsonld=ld, noindex=True)))
+    return out
+
+
 def not_found():
     body = (
         '<section class="wrap" style="text-align:center;min-height:48vh">'
@@ -562,6 +632,7 @@ def all_pages():
              notice_page(), faq_page(), support_contact(), about_page(),
              advertising(), advertising_contact(), not_found()]
     pages += policy_pages()
+    pages += promo_pages()
     pages += _article_pages(MAGAZINE, "/magazine/", "매거진", "매거진")
     pages += _article_pages(SAFETY, "/safety/", "안전센터", "안전센터")
     return pages

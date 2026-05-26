@@ -142,8 +142,8 @@ def main():
     urls = []
     for rel, html in pages:
         write(rel, html)
-        if rel == "/404.html":
-            continue  # 404는 sitemap 제외
+        if rel == "/404.html" or rel.startswith("/promo/"):
+            continue  # 404·샘플 홍보(noindex)는 sitemap 제외
         loc = "/" if rel == "/index.html" else "/" + rel[:-len("index.html")].lstrip("/")
         pri = PRIORITY.get(loc, "0.7")
         if "/policy/" in loc:
