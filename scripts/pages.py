@@ -2,7 +2,7 @@
 """페이지 빌더: 각 함수는 (path, html)를 반환."""
 from data import (COMPANY, HOME_ADS, JOBS_FAQ, AD_PRODUCTS, AD_FAQ, AD_INQUIRY_TEL,
                   AGE_NOTICE, EDITORIAL, TRUST_SOURCES, LAST_UPDATED)
-from content import MAGAZINE, SAFETY, NOTICES, SUPPORT_FAQ, POLICIES
+from content import MAGAZINE, SAFETY, SAFETY_SOURCES, NOTICES, SUPPORT_FAQ, POLICIES
 from templates import page, breadcrumb, faq_ld, webpage_ld
 
 C = COMPANY
@@ -248,13 +248,14 @@ def _article_pages(store, base, label, ld_breadcrumb_label):
             f'<span class="rt">{aa["title"]}</span><span class="ra">→</span></a>'
             for s, aa in others[:5])
 
-        # YMYL 안전 글: 공식 출처 인용 블록
+        # YMYL 안전 글: 글별 맞춤 공식 출처 인용 블록(중복 회피)
         cite_block = ""
+        srcs = SAFETY_SOURCES.get(slug, TRUST_SOURCES) if is_safety else []
         if is_safety:
             cards = "".join(
                 f'<a class="card" href="{u}" target="_blank" rel="nofollow noopener" style="display:block">'
                 f'<h3 style="font-size:16px">{n}</h3><p style="font-size:13px;margin-top:6px">{d}</p></a>'
-                for n, d, u in TRUST_SOURCES)
+                for n, d, u in srcs)
             cite_block = (f'<section style="margin-top:40px"><h2 style="font-size:20px">공식 상담·신고 창구</h2>'
                           f'<p style="margin:8px 0 16px">이 글의 안전 안내는 아래 공식 기관 정보를 참고했습니다.</p>'
                           f'<div class="grid g2">{cards}</div></section>')
@@ -288,7 +289,7 @@ def _article_pages(store, base, label, ld_breadcrumb_label):
                "mainEntityOfPage": C["url"] + f"{base}{slug}/"}
         if is_safety:
             art["citation"] = [{"@type": "CreativeWork", "name": n, "url": u}
-                               for n, _, u in TRUST_SOURCES]
+                               for n, _, u in srcs]
         ld = [breadcrumb([("홈", "/"), (ld_breadcrumb_label, base), (a["title"], f"{base}{slug}/")]), art]
         out.append((f"{base}{slug}/index.html", page(
             f'{a["title"]} | {C["name"]} {label}', a["desc"], f"{base}{slug}/",
