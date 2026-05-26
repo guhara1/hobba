@@ -131,7 +131,7 @@ def home():
           faq_ld(SUPPORT_FAQ[:5])]
     return "/index.html", page(
         f'{C["name"]} | 호빠·호스트바 선수 채용 (호빠알바 구인구직)',
-        '만 19세 이상 호빠·호스트바 선수(남성 호스트) 채용정보. 호빠알바 구인구직·선수 모집 공고와 안전 가이드, 투명한 수입·정산 정보를 제공하는 호빠클럽.',
+        '만 19세 이상 호빠·호스트바 선수(남성 호스트) 채용정보. 검수된 공고와 안전 가이드를 제공하는 호빠알바 구인구직.',
         "/", body, jsonld=ld, verification=True, modified=LAST_UPDATED)
 
 
