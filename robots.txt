@@ -1,28 +1,44 @@
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Yeti
+Allow: /
+
+User-agent: NaverBot
+Allow: /
+
+User-agent: Daum
+Allow: /
+
+User-agent: Daumoa
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
 User-agent: *
 Allow: /
 Disallow: /api/
 
-User-agent: Googlebot
-Allow: /
-User-agent: Yeti
-Allow: /
-Crawl-delay: 1
-User-agent: NaverBot
-Allow: /
-Crawl-delay: 1
-User-agent: Daumoa
-Allow: /
-User-agent: Bingbot
-Allow: /
-User-agent: GPTBot
-Allow: /
-User-agent: OAI-SearchBot
-Allow: /
-User-agent: ClaudeBot
-Allow: /
-User-agent: PerplexityBot
-Allow: /
-
 Sitemap: https://hobbaclub.vip/sitemap.xml
 Sitemap: https://hobbaclub.vip/sitemap1.xml
+Sitemap: https://hobbaclub.vip/sitemap_index.xml
 Host: hobbaclub.vip

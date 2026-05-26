@@ -6,8 +6,8 @@ import sys
 from datetime import datetime, timezone, timedelta
 
 sys.path.insert(0, os.path.dirname(__file__))
-from data import COMPANY
-from content import MAGAZINE, NOTICES
+from data import COMPANY, LAST_UPDATED
+from content import MAGAZINE, SAFETY, NOTICES
 from pages import all_pages
 from og import build_png
 
@@ -33,39 +33,69 @@ def write(rel, content, do_min=True):
         f.write(content)
 
 
+def _changefreq(loc, pri):
+    if loc == "/":
+        return "daily"
+    if "/policy/" in loc:
+        return "yearly"
+    if loc in ("/jobs/", "/magazine/", "/safety/", "/support/", "/advertising/",
+               "/support/notice/"):
+        return "weekly"
+    return "monthly"
+
+
 def build_sitemap(urls):
-    today = datetime.now(KST).strftime("%Y-%m-%d")
+    # lastmod은 실제 콘텐츠 갱신일(LAST_UPDATED) — 매 빌드마다 바뀌지 않아 신뢰도 유지
     items = ""
     for loc, pri in urls:
-        items += (f"<url><loc>{C['url']}{loc}</loc><lastmod>{today}</lastmod>"
-                  f"<changefreq>weekly</changefreq><priority>{pri}</priority></url>")
-    xml = ('<?xml version="1.0" encoding="UTF-8"?>'
+        items += (f"<url><loc>{C['url']}{loc}</loc><lastmod>{LAST_UPDATED}</lastmod>"
+                  f"<changefreq>{_changefreq(loc, pri)}</changefreq>"
+                  f"<priority>{pri}</priority></url>")
+    xml = ('<?xml version="1.0" encoding="UTF-8"?>\n'
            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + items + "</urlset>")
     write("/sitemap.xml", xml, do_min=False)
     write("/sitemap1.xml", xml, do_min=False)
+    # 사이트맵 인덱스(검색엔진 제출 편의·이중화)
+    idx = ('<?xml version="1.0" encoding="UTF-8"?>\n'
+           '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+           f'<sitemap><loc>{C["url"]}/sitemap.xml</loc><lastmod>{LAST_UPDATED}</lastmod></sitemap>'
+           f'<sitemap><loc>{C["url"]}/sitemap1.xml</loc><lastmod>{LAST_UPDATED}</lastmod></sitemap>'
+           '</sitemapindex>')
+    write("/sitemap_index.xml", idx, do_min=False)
+
+
+def _esc(s):
+    return (s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;"))
 
 
 def build_rss():
     now = datetime.now(KST)
-    items = ""
+    # (date, title, link, guid, desc, category) — 매거진+안전센터+공지 전부 포함
+    entries = []
     for slug, a in MAGAZINE.items():
-        pub = datetime.strptime(a["date"], "%Y-%m-%d").replace(tzinfo=KST)
-        items += (f"<item><title>{a['title']}</title>"
-                  f"<link>{C['url']}/magazine/{slug}/</link>"
-                  f"<guid>{C['url']}/magazine/{slug}/</guid>"
-                  f"<description>{a['desc']}</description>"
-                  f"<pubDate>{pub.strftime('%a, %d %b %Y %H:%M:%S +0900')}</pubDate></item>")
+        entries.append((a["date"], a["title"], f"{C['url']}/magazine/{slug}/",
+                        f"{C['url']}/magazine/{slug}/", a["desc"], "매거진"))
+    for slug, a in SAFETY.items():
+        entries.append((a["date"], a["title"], f"{C['url']}/safety/{slug}/",
+                        f"{C['url']}/safety/{slug}/", a["desc"], "안전센터"))
     for n in NOTICES:
-        pub = datetime.strptime(n["date"], "%Y-%m-%d").replace(tzinfo=KST)
-        items += (f"<item><title>[공지] {n['title']}</title>"
-                  f"<link>{C['url']}/support/notice/</link>"
-                  f"<guid>{C['url']}/support/notice/#{n['slug']}</guid>"
-                  f"<description>{n['body'][0]}</description>"
+        entries.append((n["date"], f"[공지] {n['title']}", f"{C['url']}/support/notice/",
+                        f"{C['url']}/support/notice/#{n['slug']}", n["body"][0], "공지사항"))
+    entries.sort(key=lambda e: e[0], reverse=True)  # 최신순
+    items = ""
+    for date, title, link, guid, desc, cat in entries:
+        pub = datetime.strptime(date, "%Y-%m-%d").replace(tzinfo=KST)
+        items += (f"<item><title>{_esc(title)}</title>"
+                  f"<link>{link}</link>"
+                  f"<guid isPermaLink=\"false\">{guid}</guid>"
+                  f"<category>{cat}</category>"
+                  f"<description>{_esc(desc)}</description>"
                   f"<pubDate>{pub.strftime('%a, %d %b %Y %H:%M:%S +0900')}</pubDate></item>")
-    rss = ('<?xml version="1.0" encoding="UTF-8"?>'
+    rss = ('<?xml version="1.0" encoding="UTF-8"?>\n'
            '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel>'
-           f"<title>{C['name']} 매거진</title><link>{C['url']}/</link>"
-           f"<description>{C['tagline']}</description><language>ko</language>"
+           f"<title>{_esc(C['name'])} 매거진·안전센터</title><link>{C['url']}/</link>"
+           f"<description>{_esc(C['tagline'])}</description><language>ko-KR</language>"
+           f"<generator>{_esc(C['name'])}</generator><ttl>60</ttl>"
            f'<atom:link href="{C["url"]}/rss.xml" rel="self" type="application/rss+xml"/>'
            f"<lastBuildDate>{now.strftime('%a, %d %b %Y %H:%M:%S +0900')}</lastBuildDate>"
            + items + "</channel></rss>")
@@ -73,19 +103,24 @@ def build_rss():
 
 
 def build_robots():
+    # Crawl-delay 제거(크롤 속도 제약 없앰) — 빠른 색인 우선. 검색·AI 봇 전체 허용, /api만 차단.
     txt = (
-        "User-agent: *\nAllow: /\nDisallow: /api/\n\n"
-        "User-agent: Googlebot\nAllow: /\n"
-        "User-agent: Yeti\nAllow: /\nCrawl-delay: 1\n"
-        "User-agent: NaverBot\nAllow: /\nCrawl-delay: 1\n"
-        "User-agent: Daumoa\nAllow: /\n"
-        "User-agent: Bingbot\nAllow: /\n"
-        "User-agent: GPTBot\nAllow: /\n"
-        "User-agent: OAI-SearchBot\nAllow: /\n"
-        "User-agent: ClaudeBot\nAllow: /\n"
+        "User-agent: Googlebot\nAllow: /\n\n"
+        "User-agent: Googlebot-Image\nAllow: /\n\n"
+        "User-agent: Bingbot\nAllow: /\n\n"
+        "User-agent: Yeti\nAllow: /\n\n"          # 네이버
+        "User-agent: NaverBot\nAllow: /\n\n"
+        "User-agent: Daum\nAllow: /\n\n"
+        "User-agent: Daumoa\nAllow: /\n\n"
+        "User-agent: GPTBot\nAllow: /\n\n"
+        "User-agent: OAI-SearchBot\nAllow: /\n\n"
+        "User-agent: ChatGPT-User\nAllow: /\n\n"
+        "User-agent: ClaudeBot\nAllow: /\n\n"
         "User-agent: PerplexityBot\nAllow: /\n\n"
+        "User-agent: *\nAllow: /\nDisallow: /api/\n\n"
         f"Sitemap: {C['url']}/sitemap.xml\n"
         f"Sitemap: {C['url']}/sitemap1.xml\n"
+        f"Sitemap: {C['url']}/sitemap_index.xml\n"
         f"Host: {C['domain']}\n")
     write("/robots.txt", txt, do_min=False)
 
@@ -161,7 +196,7 @@ def main():
     print(f"✅ {len(pages)} HTML 페이지 생성 완료")
     for rel, _ in sorted(pages):
         print("  ", "/" if rel == "/index.html" else "/" + rel[:-len('index.html')].lstrip('/'))
-    print("✅ sitemap.xml · sitemap1.xml · rss.xml · robots.txt · site.webmanifest · favicon.svg · _headers · assets/og.png")
+    print("✅ sitemap.xml · sitemap1.xml · sitemap_index.xml · rss.xml · robots.txt · site.webmanifest · favicon.svg · _headers · assets/og.png")
 
 
 if __name__ == "__main__":
