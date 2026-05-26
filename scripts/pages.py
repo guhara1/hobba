@@ -556,51 +556,99 @@ def advertising_contact():
 def promo_pages():
     """배너 클릭 시 보이는 샘플 홍보 상세 페이지 (noindex — 데모/기만 색인 방지)."""
     BEN = {
-        "VVIP": ["메인 최상단 고정 노출 매장", "신입 선수 환영 · 체계적인 교육 제공",
-                 "보장급 + TC·인센티브 (면접 협의)", "자유 출근 · 스케줄 조율 가능"],
-        "VIP": ["검증된 운영 매장 · 단골 비중 안정", "초보 가능 · 교육 지원",
-                "TC·인센티브 + 보장급 협의", "유연한 근무 형태"],
-        "프리미엄": ["성실 근무 환영", "근무 조건 면접에서 협의", "자유로운 출근 가능"],
+        "VVIP": ["메인 최상단 고정 노출로 높은 방문·문의", "신입 선수 환영 · 1:1 멘토링과 체계적 교육",
+                 "보장급 + TC·인센티브 (면접 협의)", "단골 多 · 안정적인 매출 기반",
+                 "자유 출근 · 개인 스케줄 조율 가능", "용모·자기관리 지원(의상·헤어 등)"],
+        "VIP": ["검증된 운영 매장 · 안정적인 단골층", "초보 가능 · 적응 교육 지원",
+                "TC·인센티브 + 보장급 협의", "유연한 근무 형태(정규·파트)",
+                "동료와 함께하는 팀 분위기"],
+        "프리미엄": ["성실 근무 환영 · 부담 없는 시작", "근무 조건 면접에서 투명하게 협의",
+                  "자유로운 출근 · 본인 페이스 존중", "기본기부터 차근차근 교육"],
+    }
+    LOOKING = {
+        "VVIP": ["밝고 적극적인 대화·소통이 가능한 분", "단정한 용모와 꾸준한 자기관리가 되는 분",
+                 "성실한 근태로 단골을 만들 의지가 있는 분"],
+        "VIP": ["처음이라도 배우려는 의지가 있는 분", "사람과의 대화를 즐기는 분", "야간 근무에 적응 가능한 분"],
+        "프리미엄": ["성실하게 출근할 수 있는 분", "기본 매너와 밝은 태도를 갖춘 분", "만 19세 이상 성인"],
     }
     PAY = {"VVIP": "보장급 + TC·인센티브 (면접 협의)",
            "VIP": "TC·인센티브 + 보장급 협의", "프리미엄": "면접 시 협의"}
+    promo_faq = [
+        ("경험이 없어도 지원할 수 있나요?", "네, 신입 선수를 환영하며 매장 교육과 선배의 도움을 받아 시작할 수 있습니다. 다만 보장급·정산 조건은 면접에서 꼭 확인하세요."),
+        ("수입은 어떻게 되나요?", "보장급에 TC·인센티브가 더해지는 구조이며, 정확한 금액은 면접에서 안내됩니다. 공고의 ‘예상 수입’은 최대치인 경우가 많으니 보장급 기준으로 판단하세요."),
+        ("근무 시간과 출근은 어떻게 되나요?", "야간 근무가 중심이며 정규·파트 형태를 협의할 수 있습니다. 출근 일수와 시간은 면접 시 조율합니다."),
+        ("안전하게 일할 수 있나요?", "본 매장 정보는 검수 정책에 따라 게재됩니다. 선불금·보증금 요구나 불법적인 요구가 있으면 응하지 말고 안전센터로 신고해 주세요."),
+    ]
+    steps = [("01", "전화상담", "궁금한 점을 전화로 편하게 문의합니다. (샘플 페이지에서는 연결되지 않습니다)"),
+             ("02", "면접", "매장 방문 면접에서 업무·수입·근무 조건을 확인합니다."),
+             ("03", "조건 확정", "보장급·정산·출근 조건을 서면으로 확정합니다."),
+             ("04", "근무 시작", "교육을 받고 적응 기간을 거쳐 근무를 시작합니다.")]
     out = []
     for pid, tier, b in _promo_entries():
         name = b.get("title") or b.get("name")
         area = b["area"].replace("-", " ")
         copy = b["copy"]
         pay = (f'{b["unit"]} 기준 {b["price"]} (샘플)' if b.get("price") else PAY[tier])
-        ben = "".join(f"<li style='margin-bottom:6px'>{x}</li>" for x in BEN[tier])
-        info = [("등급", tier), ("지역", area), ("근무 형태", "야간 (정규·파트 협의)"),
-                ("수입 구조", pay), ("정산", "면접 시 안내"), ("연령", "만 19세 이상")]
+        ben = "".join(f"<li style='margin-bottom:7px'>{x}</li>" for x in BEN[tier])
+        look = "".join(f"<li style='margin-bottom:7px'>{x}</li>" for x in LOOKING[tier])
+        info = [("광고 등급", tier), ("지역", area), ("모집", "선수(남성 호스트)"),
+                ("근무 형태", "야간 (정규·파트 협의)"), ("수입 구조", pay),
+                ("정산", "면접 시 안내"), ("지원 자격", "만 19세 이상")]
         rows = "".join(
             f'<div style="display:flex;justify-content:space-between;gap:12px;'
             f'border-top:1px solid var(--line);padding:11px 0">'
             f'<span style="color:var(--dim);font-size:13.5px">{k}</span>'
-            f'<span style="font-weight:600;font-size:14px">{v}</span></div>' for k, v in info)
+            f'<span style="font-weight:600;font-size:14px;text-align:right">{v}</span></div>' for k, v in info)
+        step_html = "".join(_note(int(n), t, [d]) for n, t, d in steps)
+        faq_html = "".join(f'<details><summary>{q}</summary><p>{a}</p></details>' for q, a in promo_faq)
+        # 다른 매장 추천 (최대 5)
+        rel = "".join(
+            f'<a class="rel-item" href="/promo/{rp}/"><span class="tag">{rt}</span>'
+            f'<span class="rt">{rb.get("title") or rb.get("name")}</span><span class="ra">→</span></a>'
+            for rp, rt, rb in [e for e in _promo_entries() if e[0] != pid][:5])
         body = (
-            '<section class="wrap" style="max-width:840px">'
+            '<section class="wrap" style="max-width:860px">'
             '<a href="/jobs/" style="color:var(--g1);font-size:13px;font-weight:600">← 채용정보</a>'
-            f'<div style="display:flex;gap:8px;align-items:center;margin:18px 0 8px">'
+            f'<div style="display:flex;gap:8px;align-items:center;margin:18px 0 10px">'
             f'<span class="tag">{tier} 광고</span>'
             f'<span class="tag" style="background:none;border-color:var(--line-2);color:var(--dim)">샘플</span></div>'
             f'<h1 style="font-size:clamp(28px,4.5vw,44px)">{name}</h1>'
-            f'<p class="lead" style="margin:14px 0 8px">{area} · {copy}</p>'
-            '<div style="margin:22px 0 8px"><button class="btn btn-gold" type="button">📞 전화상담</button></div>'
-            '<p style="font-size:12.5px;color:var(--dim)">※ 본 페이지는 광고 게재 형식을 보여주는 <strong style="color:var(--muted)">샘플</strong>입니다. '
-            '실제 연락처와 상세 조건은 매장의 광고 등록 후 노출됩니다.</p>'
+            f'<p class="lead" style="margin:14px 0 10px">{area} · {copy}</p>'
+            '<div style="margin:20px 0 8px;display:flex;gap:10px;flex-wrap:wrap">'
+            '<button class="btn btn-gold" type="button">📞 전화상담</button>'
+            '<a class="btn btn-ghost" href="#info">모집 정보 보기</a></div>'
+            '<p style="font-size:12.5px;color:var(--dim)">※ 본 페이지는 광고 게재 형식을 보여주는 '
+            '<strong style="color:var(--muted)">샘플</strong>입니다. 실제 연락처·상세 조건은 매장의 광고 등록 후 노출됩니다.</p>'
+            # 본문 2열
             '<div class="grid g2" style="margin-top:30px;align-items:start">'
-            f'<div><h2 style="font-size:20px;margin-bottom:12px">모집 안내</h2>'
-            f'<p style="color:var(--muted);line-height:1.85;margin-bottom:14px">{name}에서 함께할 선수(남성 호스트)를 모집합니다. '
-            f'손님 응대와 대화·분위기 메이킹이 주 업무이며, 매장 교육과 선배의 도움을 받아 시작할 수 있습니다. '
-            f'지원 전 근무 조건과 수입 구조를 면접에서 꼭 확인하세요.</p>'
-            f'<h3 style="font-size:16px;margin:18px 0 10px">주요 혜택·조건</h3>'
-            f'<ul style="padding-left:18px;color:var(--muted)">{ben}</ul></div>'
-            f'<div class="card"><h3 style="font-size:15px;margin-bottom:6px">모집 정보</h3>{rows}'
-            f'<div style="margin-top:16px"><button class="btn btn-gold" type="button" style="width:100%;justify-content:center">📞 전화상담</button></div></div>'
+            f'<div><h2 style="font-size:21px;margin-bottom:12px">매장 소개</h2>'
+            f'<p style="color:var(--muted);line-height:1.9;margin-bottom:14px">{name}은(는) {area} 권역에서 운영되는 호스트바로, '
+            f'함께할 선수(남성 호스트)를 모집합니다. 손님을 맞이하고 대화와 분위기 메이킹으로 즐거운 시간을 만드는 것이 주 업무이며, '
+            f'경험이 없어도 매장 교육과 선배의 도움을 받아 시작할 수 있습니다.</p>'
+            f'<p style="color:var(--muted);line-height:1.9">“{copy}” — 지원 전 근무 조건과 수입 구조를 면접에서 충분히 확인하시고, '
+            f'본인에게 맞는 환경인지 살펴보세요.</p>'
+            f'<h2 style="font-size:21px;margin:28px 0 12px">이런 분을 찾습니다</h2>'
+            f'<ul style="padding-left:18px;color:var(--muted)">{look}</ul>'
+            f'<h2 style="font-size:21px;margin:28px 0 12px">근무 환경·혜택</h2>'
+            f'<ul style="padding-left:18px;color:var(--muted)">{ben}</ul>'
+            f'<h2 style="font-size:21px;margin:28px 0 12px">위치·상권</h2>'
+            f'<p style="color:var(--muted);line-height:1.9">{area} 권역에 위치해 접근성이 좋은 편입니다. '
+            f'정확한 위치와 교통편은 면접 시 안내되며, 야간 근무 특성상 출퇴근 동선도 함께 확인하시길 권합니다.</p></div>'
+            # 우측 정보 카드(sticky 느낌)
+            f'<div class="card" id="info"><h3 style="font-size:15px;margin-bottom:4px">모집 정보</h3>{rows}'
+            f'<div style="margin-top:16px"><button class="btn btn-gold" type="button" style="width:100%;justify-content:center">📞 전화상담</button></div>'
+            f'<p style="font-size:11.5px;color:var(--dim);margin-top:10px;text-align:center">샘플 페이지 — 연결되지 않습니다</p></div>'
             '</div>'
-            f'<div class="notice-box" style="margin-top:26px">{AGE_NOTICE} 선불금·보증금 요구나 불법적인 요구가 있으면 응하지 말고 '
+            # 지원 절차
+            f'<section style="margin-top:40px"><h2 style="font-size:21px;margin-bottom:18px">지원·상담 절차</h2>{step_html}</section>'
+            # FAQ
+            f'<section style="margin-top:36px"><h2 style="font-size:21px;margin-bottom:14px">자주 묻는 질문</h2>{faq_html}</section>'
+            # 안전 고지
+            f'<div class="notice-box" style="margin-top:24px">{AGE_NOTICE} 선불금·보증금 요구나 불법적인 요구가 있으면 응하지 말고 '
             '<a href="/safety/" style="color:var(--g1)">안전센터</a>를 통해 신고하세요. 본 매장 정보는 검수 정책에 따라 게재됩니다.</div>'
+            # 다른 매장
+            f'<section style="margin-top:40px"><h2 style="font-size:20px;margin-bottom:16px">다른 매장 광고</h2>'
+            f'<div class="rel-list">{rel}</div></section>'
             '</section>')
         ld = [breadcrumb([("홈", "/"), ("채용정보", "/jobs/"), (f"{name} (샘플)", f"/promo/{pid}/")])]
         out.append((f"/promo/{pid}/index.html", page(
