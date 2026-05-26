@@ -549,7 +549,8 @@ window.__cm=function(){document.getElementById('mp').classList.remove('open');do
 window.__ageClose=function(){try{localStorage.setItem('hobba_adult','1')}catch(e){}var g=document.getElementById('agegate');if(g)g.style.display='none';document.documentElement.style.overflow=''};
 window.__ageEnter=function(){if(typeof window.__kcpCert==='function'){window.__kcpCert();return}window.__ageClose()};
 window.__ageExit=function(){location.href='https://www.google.com'};
-(window.requestIdleCallback||function(f){setTimeout(f,1)})(function(){document.querySelectorAll('#mp a').forEach(function(a){a.addEventListener('click',window.__cm)})});
+window.__cf=function(f){f.addEventListener('submit',function(e){e.preventDefault();var b=f.querySelector('[type=submit]'),o=b.textContent;b.disabled=true;b.textContent='전송 중...';fetch('/api/contact-ads',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.fromEntries(new FormData(f)))}).then(function(r){return r.json().catch(function(){return{}}).then(function(j){return{ok:r.ok&&j&&j.ok,j:j}})}).then(function(x){if(x.ok){f.innerHTML='<div style="text-align:center;padding:26px 8px"><h3 style="margin-bottom:8px">문의가 접수되었습니다</h3><p>내부 검토 후 순차적으로 답변드리겠습니다.</p></div>'}else{b.disabled=false;b.textContent=o;alert((x.j&&x.j.error)||'전송에 실패했습니다. 잠시 후 다시 시도해 주세요.')}}).catch(function(){b.disabled=false;b.textContent=o;alert('전송 중 오류가 발생했습니다.')})})};
+(window.requestIdleCallback||function(f){setTimeout(f,1)})(function(){document.querySelectorAll('#mp a').forEach(function(a){a.addEventListener('click',window.__cm)});document.querySelectorAll('form[action="/api/contact-ads"]').forEach(window.__cf)});
 """
 
 

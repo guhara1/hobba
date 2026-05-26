@@ -367,22 +367,23 @@ def support_contact():
         '<div class="field"><label>이름 또는 닉네임<span class="req">*</span></label><input name="name" required></div>'
         '<div class="field"><label>연락처 또는 이메일<span class="req">*</span></label><input name="contact" required></div>'
         '<div class="field"><label>문의 유형<span class="req">*</span></label>'
-        '<select name="type" required><option>허위공고 신고</option><option>불법 요구 제보</option>'
-        '<option>일반 문의</option><option>개인정보 관련</option></select></div>'
+        '<select name="type" required>'
+        '<option>VVIP 광고문의</option><option>VIP 광고문의</option><option>Special 광고문의</option>'
+        '<option>불법 요구 제보</option><option>일반 문의</option></select></div>'
         '<div class="field"><label>내용<span class="req">*</span></label>'
-        '<textarea name="message" rows="6" required placeholder="신고 시 매장명·지역·캡처 등 근거를 함께 적어 주세요."></textarea></div>'
+        '<textarea name="message" rows="6" required placeholder="광고문의 시 매장명·희망 위치·기간을, 제보 시 근거를 함께 적어 주세요."></textarea></div>'
         '<div class="field"><label><input type="checkbox" required style="width:auto;margin-right:8px">'
         '개인정보 수집·이용에 동의합니다.</label></div>'
         '<input class="hp" name="website" tabindex="-1" autocomplete="off">'
         '<button class="btn btn-gold" type="submit">문의 보내기</button>')
-    body = (_hero("문의하기", "문의하기", "허위공고 신고나 일반 문의를 남겨 주세요. 접수된 내용은 내부 검토 후 순차적으로 답변드립니다.") +
+    body = (_hero("문의하기", "문의하기", "광고문의(VVIP·VIP·Special)나 제보·일반 문의를 남겨 주세요. 접수된 내용은 내부 검토 후 순차적으로 답변드립니다.") +
             f'<section class="wrap" style="padding-top:0;max-width:720px">'
             f'<form class="card" method="post" action="/api/contact-ads">{fhtml}</form>'
             f'<div class="notice-box" style="margin-top:20px">긴급 상황은 112, 여성긴급전화 1366으로 즉시 도움을 받으세요. {AGE_NOTICE}</div></section>')
     ld = [breadcrumb([("홈", "/"), ("고객센터", "/support/"), ("문의하기", "/support/contact/")])]
     return "/support/contact/index.html", page(
-        "문의하기 — 허위공고 신고·일반 문의 | 호빠클럽",
-        "호빠클럽 문의하기. 허위공고 신고, 불법 요구 제보, 일반 문의를 접수합니다. 내부 검토 후 순차 답변드립니다.",
+        "문의하기 — 광고문의·제보·일반 문의 | 호빠클럽",
+        "호빠클럽 문의하기. VVIP·VIP·Special 광고문의와 불법 요구 제보, 일반 문의를 접수합니다. 내부 검토 후 순차 답변드립니다.",
         "/support/contact/", body, jsonld=ld)
 
 
