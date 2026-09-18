@@ -21,6 +21,41 @@ def _hero(kicker, h1, sub, ctas="", byline=""):
             f'<h1>{h1}</h1><p class="hero-sub note-text">{sub}</p>{cta}{bl}</section>')
 
 
+
+MEMBER_NOTE = ("광고문의(VVIP·VIP·Special)는 매장 광고주 회원가입 후 이용할 수 있습니다. "
+               "가입 정보는 광고 상담·검수 용도로만 사용합니다.")
+
+
+def _member_banner():
+    return ('<div class="notice-box" data-mem-in style="display:none;margin-bottom:18px">'
+            '<strong style="color:var(--g1)">매장 광고주 회원</strong> · <span data-mem-who></span>'
+            '<button type="button" class="btn btn-ghost" style="margin-left:12px;padding:6px 12px;font-size:13px"'
+            ' onclick="window.__memOut()">다른 매장으로 다시 가입</button></div>')
+
+
+def _member_join(cta="회원가입하고 광고문의 하기"):
+    """비회원에게만 보이는 매장 광고주 간편 회원가입 카드."""
+    return ('<div class="card" id="join" data-mem-out style="margin-bottom:18px">'
+            '<h3 style="margin-bottom:8px">매장 광고주 회원가입</h3>'
+            f'<p class="note-text" style="margin-bottom:16px">{MEMBER_NOTE}</p>'
+            '<form method="post" action="/api/contact-ads" data-mem-join>'
+            '<div class="field"><label>상호명<span class="req">*</span></label><input name="company" required></div>'
+            '<div class="field"><label>담당자명<span class="req">*</span></label><input name="manager" required></div>'
+            '<div class="field"><label>연락처<span class="req">*</span></label><input name="phone" required></div>'
+            '<div class="field"><label>이메일<span class="req">*</span></label><input name="email" type="email" required></div>'
+            '<div class="field"><label><input type="checkbox" required style="width:auto;margin-right:8px">'
+            '개인정보 수집·이용 및 이용약관에 동의합니다.</label></div>'
+            '<input class="hp" name="website" tabindex="-1" autocomplete="off">'
+            f'<button class="btn btn-gold" type="submit">{cta}</button></form></div>')
+
+
+def _member_need(anchor="#join"):
+    """광고문의 선택 시 비회원에게 노출되는 안내(폼 내부)."""
+    return ('<div class="notice-box" data-mem-need style="display:none;margin-bottom:16px">'
+            '광고문의는 <strong>매장 광고주 회원</strong>만 접수할 수 있습니다. '
+            f'아래 <a href="{anchor}" style="color:var(--g1)">매장 광고주 회원가입</a>을 먼저 완료해 주세요.</div>')
+
+
 def _faq_section(pairs, title="자주 묻는 질문"):
     items = "".join(f'<details><summary>{q}</summary><p>{a}</p></details>' for q, a in pairs)
     return f'<section class="wrap" style="padding-top:0"><h2>{title}</h2>{items}</section>'
@@ -382,17 +417,22 @@ def support_contact():
         '<div class="field"><label>연락처 또는 이메일<span class="req">*</span></label><input name="contact" required></div>'
         '<div class="field"><label>문의 유형<span class="req">*</span></label>'
         '<select name="type" required>'
-        '<option>VVIP 광고문의</option><option>VIP 광고문의</option><option>Special 광고문의</option>'
+        '<option data-ad="1">VVIP 광고문의</option><option data-ad="1">VIP 광고문의</option>'
+        '<option data-ad="1">Special 광고문의</option>'
         '<option>불법 요구 제보</option><option>일반 문의</option></select></div>'
         '<div class="field"><label>내용<span class="req">*</span></label>'
         '<textarea name="message" rows="6" required placeholder="광고문의 시 매장명·희망 위치·기간을, 제보 시 근거를 함께 적어 주세요."></textarea></div>'
         '<div class="field"><label><input type="checkbox" required style="width:auto;margin-right:8px">'
         '개인정보 수집·이용에 동의합니다.</label></div>'
         '<input class="hp" name="website" tabindex="-1" autocomplete="off">'
+        '<input type="hidden" name="member">' + _member_need() +
         '<button class="btn btn-gold" type="submit">문의 보내기</button>')
-    body = (_hero("문의하기", "문의하기", "광고문의(VVIP·VIP·Special)나 제보·일반 문의를 남겨 주세요. 접수된 내용은 내부 검토 후 순차적으로 답변드립니다.") +
+    body = (_hero("문의하기", "문의하기",
+                  "광고문의(VVIP·VIP·Special)는 매장 광고주 회원가입 후, 제보·일반 문의는 회원가입 없이 남길 수 있습니다. 접수된 내용은 내부 검토 후 순차적으로 답변드립니다.") +
             f'<section class="wrap" style="padding-top:0;max-width:720px">'
-            f'<form class="card" method="post" action="/api/contact-ads">{fhtml}</form>'
+            f'<div data-mem-top></div>{_member_banner()}'
+            f'<form class="card" method="post" action="/api/contact-ads" data-mem-gate>{fhtml}</form>'
+            f'<div style="margin-top:18px">{_member_join("회원가입 완료하기")}</div>'
             f'<div class="notice-box" style="margin-top:20px">긴급 상황은 112, 여성긴급전화 1366으로 즉시 도움을 받으세요. {AGE_NOTICE}</div></section>')
     ld = [breadcrumb([("홈", "/"), ("고객센터", "/support/"), ("문의하기", "/support/contact/")])]
     return "/support/contact/index.html", page(
@@ -525,10 +565,10 @@ def advertising():
 
 def advertising_contact():
     fhtml = (
-        '<div class="field"><label>상호명<span class="req">*</span></label><input name="company" required></div>'
-        '<div class="field"><label>담당자명<span class="req">*</span></label><input name="manager" required></div>'
-        '<div class="field"><label>연락처<span class="req">*</span></label><input name="phone" required></div>'
-        '<div class="field"><label>이메일<span class="req">*</span></label><input name="email" type="email" required></div>'
+        '<div class="field"><label>상호명<span class="req">*</span></label><input name="company" data-mem-fill="company" required></div>'
+        '<div class="field"><label>담당자명<span class="req">*</span></label><input name="manager" data-mem-fill="manager" required></div>'
+        '<div class="field"><label>연락처<span class="req">*</span></label><input name="phone" data-mem-fill="phone" required></div>'
+        '<div class="field"><label>이메일<span class="req">*</span></label><input name="email" type="email" data-mem-fill="email" required></div>'
         '<div class="field"><label>광고 희망 상품<span class="req">*</span></label>'
         '<select name="placement" required><option>VVIP — 메인 최상단 고정</option><option>VIP</option>'
         '<option>Special</option><option>상담 후 결정</option></select></div>'
@@ -539,11 +579,14 @@ def advertising_contact():
         '<div class="field"><label><input type="checkbox" required style="width:auto;margin-right:8px">'
         '개인정보 수집·이용에 동의합니다.</label></div>'
         '<input class="hp" name="website" tabindex="-1" autocomplete="off">'
+        '<input type="hidden" name="member"><input type="hidden" name="type" value="광고문의">'
         '<button class="btn btn-gold" type="submit">광고문의 보내기</button>')
     body = (_hero("광고문의", "광고문의",
-                  "매장 정보와 희망 위치·기간을 남겨 주세요. 접수된 광고 문의는 내부 검토 후 순차적으로 답변드립니다.") +
+                  "광고문의는 매장 광고주 회원가입 후 이용할 수 있습니다. 가입 후 매장 정보와 희망 위치·기간을 남겨 주세요. 접수된 광고 문의는 내부 검토 후 순차적으로 답변드립니다.") +
             f'<section class="wrap" style="padding-top:0;max-width:720px">'
-            f'<form class="card" method="post" action="/api/contact-ads">{fhtml}</form>'
+            f'<div data-mem-top></div>{_member_banner()}{_member_join()}'
+            f'<form class="card" method="post" action="/api/contact-ads" data-mem-gate data-mem-in'
+            f' style="display:none">{fhtml}</form>'
             f'<div class="notice-box" style="margin-top:20px">접수된 광고 문의는 내부 검토 후 순차적으로 답변드립니다. '
             f'등록 기준에 맞지 않는 광고는 게재가 제한될 수 있습니다.<br><br>{AGE_NOTICE}</div>'
             f'<p style="margin-top:16px;text-align:center"><a href="/advertising/" style="color:var(--g1)">← 광고안내로 돌아가기</a></p></section>')

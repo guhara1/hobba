@@ -568,7 +568,32 @@ window.__ageClose=function(){try{localStorage.setItem('hobba_adult','1')}catch(e
 window.__ageEnter=function(){if(typeof window.__kcpCert==='function'){window.__kcpCert();return}window.__ageClose()};
 window.__ageExit=function(){location.href='https://www.google.com'};
 window.__cf=function(f){f.addEventListener('submit',function(e){e.preventDefault();var b=f.querySelector('[type=submit]'),o=b.textContent;b.disabled=true;b.textContent='전송 중...';fetch('/api/contact-ads',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.fromEntries(new FormData(f)))}).then(function(r){return r.json().catch(function(){return{}}).then(function(j){return{ok:r.ok&&j&&j.ok,j:j}})}).then(function(x){if(x.ok){f.innerHTML='<div style="text-align:center;padding:26px 8px"><h3 style="margin-bottom:8px">문의가 접수되었습니다</h3><p>내부 검토 후 순차적으로 답변드리겠습니다.</p></div>'}else{b.disabled=false;b.textContent=o;alert((x.j&&x.j.error)||'전송에 실패했습니다. 잠시 후 다시 시도해 주세요.')}}).catch(function(){b.disabled=false;b.textContent=o;alert('전송 중 오류가 발생했습니다.')})})};
-(window.requestIdleCallback||function(f){setTimeout(f,1)})(function(){document.querySelectorAll('#mp a').forEach(function(a){a.addEventListener('click',window.__cm)});document.querySelectorAll('form[action="/api/contact-ads"]').forEach(window.__cf)});
+window.__memGet=function(){try{return JSON.parse(localStorage.getItem('hobba_member')||'null')}catch(e){return null}};
+window.__memSet=function(o){try{localStorage.setItem('hobba_member',JSON.stringify(o))}catch(e){}window.__memSync()};
+window.__memOut=function(){if(!confirm('가입 정보를 지우고 다시 가입하시겠습니까?'))return;try{localStorage.removeItem('hobba_member')}catch(e){}window.__memSync()};
+window.__memSync=function(){var m=window.__memGet();
+document.querySelectorAll('[data-mem-in]').forEach(function(el){el.style.display=m?'':'none'});
+document.querySelectorAll('[data-mem-out]').forEach(function(el){el.style.display=m?'none':''});
+document.querySelectorAll('[data-mem-who]').forEach(function(el){el.textContent=m?((m.company||'')+(m.manager?' · '+m.manager:'')):''});
+document.querySelectorAll('[name=member]').forEach(function(el){el.value=m?((m.company||'')+(m.manager?' / '+m.manager:'')+(m.phone?' / '+m.phone:'')):''});
+if(m)document.querySelectorAll('[data-mem-fill]').forEach(function(el){var k=el.getAttribute('data-mem-fill');if(m[k]&&!el.value)el.value=m[k]});
+document.querySelectorAll('form[data-mem-gate]').forEach(window.__memGateForm)};
+window.__memGateForm=function(f){var m=window.__memGet(),s=f.querySelector('select[name=type]'),ad=true;
+if(s){var o=s.options[s.selectedIndex];ad=!!(o&&o.getAttribute('data-ad'))}
+var need=ad&&!m,g=f.querySelector('[data-mem-need]'),b=f.querySelector('[type=submit]');
+if(g)g.style.display=need?'':'none';
+if(b){b.disabled=need;b.style.opacity=need?'.45':'';b.style.cursor=need?'not-allowed':''}};
+window.__mj=function(f){f.addEventListener('submit',function(e){e.preventDefault();
+var b=f.querySelector('[type=submit]'),o=b.textContent,d={};new FormData(f).forEach(function(v,k){d[k]=v});
+if(d.website)return;
+d.type='매장 광고주 회원가입';
+d.member=(d.company||'')+' / '+(d.manager||'')+' / '+(d.phone||'');
+d.message='[회원가입 신청] 상호: '+(d.company||'')+' / 담당자: '+(d.manager||'')+' / 연락처: '+(d.phone||'')+' / 이메일: '+(d.email||'');
+b.disabled=true;b.textContent='가입 처리 중...';
+fetch('/api/contact-ads',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)}).then(function(r){return r.json().catch(function(){return{}}).then(function(j){return{ok:r.ok&&j&&j.ok,j:j}})}).then(function(x){b.disabled=false;b.textContent=o;
+if(x.ok){f.reset();window.__memSet({company:d.company,manager:d.manager,phone:d.phone,email:d.email,at:Date.now()});var t=document.querySelector('[data-mem-top]');if(t&&t.scrollIntoView)t.scrollIntoView({block:'center'})}
+else{alert((x.j&&x.j.error)||'가입 처리에 실패했습니다. 잠시 후 다시 시도해 주세요.')}}).catch(function(){b.disabled=false;b.textContent=o;alert('가입 처리 중 오류가 발생했습니다.')})})};
+(window.requestIdleCallback||function(f){setTimeout(f,1)})(function(){document.querySelectorAll('#mp a').forEach(function(a){a.addEventListener('click',window.__cm)});document.querySelectorAll('form[action="/api/contact-ads"]').forEach(window.__cf);document.querySelectorAll('form[data-mem-join]').forEach(window.__mj);document.querySelectorAll('form[data-mem-gate] select[name=type]').forEach(function(s){s.addEventListener('change',function(){window.__memGateForm(s.form)})});window.__memSync();});
 """
 
 

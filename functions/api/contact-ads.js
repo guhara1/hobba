@@ -47,6 +47,7 @@ export async function onRequestPost(context) {
     const period = clamp(data.period, 40);
     const type = clamp(data.type, 40);
     const message = clamp(data.message, 2000);
+    const member = clamp(data.member, 160);
 
     // 서버측 최소 검증
     if (message.length < 5 || (!phone && !email && !company)) {
@@ -56,6 +57,14 @@ export async function onRequestPost(context) {
       });
     }
 
+    // 광고문의는 매장 광고주 회원(가입 완료)만 접수
+    if (type.includes("광고문의") && !member) {
+      return new Response(
+        JSON.stringify({ ok: false, error: "광고문의는 매장 광고주 회원가입 후 이용할 수 있습니다." }),
+        { status: 403, headers: cors },
+      );
+    }
+
     const nowKst = new Date(Date.now() + 9 * 3600 * 1000)
       .toISOString().replace("T", " ").slice(0, 16);
     const referer = clamp(request.headers.get("referer") || "", 200);
@@ -63,6 +72,7 @@ export async function onRequestPost(context) {
     const lines = [
       "<b>📩 호빠클럽 문의 접수</b>",
       type && `유형: ${type}`,
+      member && `회원: ${member}`,
       company && `상호/이름: ${company}`,
       manager && `담당자: ${manager}`,
       phone && `연락처: ${phone}`,
