@@ -57,8 +57,22 @@ export async function onRequestPost(context) {
       });
     }
 
+    // 일반 문의·제보(문의하기 폼)는 접수 중단 — 스팸 유입 차단.
+    // 재개하려면 이 블록을 주석 처리하고 /support/contact/ 폼을 복구하면 된다.
+    const isAds = type.includes("광고문의");
+    const isJoin = type.includes("회원가입");
+    if (!isAds && !isJoin) {
+      return new Response(
+        JSON.stringify({
+          ok: false,
+          error: "온라인 문의 접수를 일시 중단했습니다. 고객센터(0508-202-4690) 또는 help@hobbaclub.vip로 연락해 주세요.",
+        }),
+        { status: 403, headers: cors },
+      );
+    }
+
     // 광고문의는 매장 광고주 회원(가입 완료)만 접수
-    if (type.includes("광고문의") && !member) {
+    if (isAds && !member) {
       return new Response(
         JSON.stringify({ ok: false, error: "광고문의는 매장 광고주 회원가입 후 이용할 수 있습니다." }),
         { status: 403, headers: cors },

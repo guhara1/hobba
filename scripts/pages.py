@@ -412,33 +412,62 @@ def faq_page():
 
 
 def support_contact():
-    fhtml = (
-        '<div class="field"><label>이름 또는 닉네임<span class="req">*</span></label><input name="name" required></div>'
-        '<div class="field"><label>연락처 또는 이메일<span class="req">*</span></label><input name="contact" required></div>'
-        '<div class="field"><label>문의 유형<span class="req">*</span></label>'
-        '<select name="type" required>'
-        '<option data-ad="1">VVIP 광고문의</option><option data-ad="1">VIP 광고문의</option>'
-        '<option data-ad="1">Special 광고문의</option>'
-        '<option>불법 요구 제보</option><option>일반 문의</option></select></div>'
-        '<div class="field"><label>내용<span class="req">*</span></label>'
-        '<textarea name="message" rows="6" required placeholder="광고문의 시 매장명·희망 위치·기간을, 제보 시 근거를 함께 적어 주세요."></textarea></div>'
-        '<div class="field"><label><input type="checkbox" required style="width:auto;margin-right:8px">'
-        '개인정보 수집·이용에 동의합니다.</label></div>'
-        '<input class="hp" name="website" tabindex="-1" autocomplete="off">'
-        '<input type="hidden" name="member">' + _member_need() +
-        '<button class="btn btn-gold" type="submit">문의 보내기</button>')
+    """온라인 문의 폼 일시 중단(스팸 유입 차단).
+
+    폼을 되살리려면 아래 주석 처리된 원본(_ARCHIVED 블록)을 복구하면 된다.
+    광고문의는 /advertising/contact/ (매장 광고주 회원가입 게이트)로 계속 접수한다.
+    """
+    box = ('<div class="card" style="text-align:center">'
+           '<h3 style="margin-bottom:10px">온라인 문의 접수를 일시 중단합니다</h3>'
+           '<p class="note-text" style="margin-bottom:18px">스팸성 문의가 늘어나 문의 폼 접수를 잠시 중단했습니다. '
+           '아래 고객센터 전화 또는 이메일로 연락 주시면 순차적으로 답변드립니다.</p>'
+           f'<p style="margin-bottom:6px"><strong>고객센터</strong> '
+           f'<a href="tel:{C["tel"].replace("-", "")}" style="color:var(--g1)">{C["tel"]}</a> '
+           f'({C["tel_hours"]})</p>'
+           f'<p><strong>이메일</strong> <a href="mailto:{C["email"]}" style="color:var(--g1)">{C["email"]}</a></p>'
+           '<div style="margin-top:20px"><a class="btn btn-gold" href="/advertising/contact/">광고문의 하기</a></div></div>')
     body = (_hero("문의하기", "문의하기",
-                  "광고문의(VVIP·VIP·Special)는 매장 광고주 회원가입 후, 제보·일반 문의는 회원가입 없이 남길 수 있습니다. 접수된 내용은 내부 검토 후 순차적으로 답변드립니다.") +
-            f'<section class="wrap" style="padding-top:0;max-width:720px">'
-            f'<div data-mem-top></div>{_member_banner()}'
-            f'<form class="card" method="post" action="/api/contact-ads" data-mem-gate>{fhtml}</form>'
-            f'<div style="margin-top:18px">{_member_join("회원가입 완료하기")}</div>'
-            f'<div class="notice-box" style="margin-top:20px">긴급 상황은 112, 여성긴급전화 1366으로 즉시 도움을 받으세요. {AGE_NOTICE}</div></section>')
+                  "온라인 문의 폼 접수를 일시 중단했습니다. 고객센터 전화·이메일로 문의해 주세요. 광고문의는 광고문의 페이지에서 접수합니다.") +
+            f'<section class="wrap" style="padding-top:0;max-width:720px">{box}'
+            f'<div class="notice-box" style="margin-top:20px">허위공고·불법 요구 제보도 위 연락처로 받습니다. '
+            f'긴급 상황은 112, 여성긴급전화 1366으로 즉시 도움을 받으세요. {AGE_NOTICE}</div></section>')
     ld = [breadcrumb([("홈", "/"), ("고객센터", "/support/"), ("문의하기", "/support/contact/")])]
     return "/support/contact/index.html", page(
-        "문의하기 — 광고문의·제보·일반 문의 | 호빠클럽",
-        "호빠클럽 문의하기. VVIP·VIP·Special 광고문의와 불법 요구 제보, 일반 문의를 접수합니다. 내부 검토 후 순차 답변드립니다.",
+        "문의하기 — 고객센터 전화·이메일 안내 | 호빠클럽",
+        "호빠클럽 문의하기. 온라인 문의 폼 접수를 일시 중단했습니다. 고객센터 전화·이메일로 문의·제보를 접수합니다.",
         "/support/contact/", body, jsonld=ld)
+
+
+# ── _ARCHIVED: 기존 온라인 문의 폼(스팸 차단 위해 주석 처리) ─────────────────
+# def support_contact():
+#     fhtml = (
+#         '<div class="field"><label>이름 또는 닉네임<span class="req">*</span></label><input name="name" required></div>'
+#         '<div class="field"><label>연락처 또는 이메일<span class="req">*</span></label><input name="contact" required></div>'
+#         '<div class="field"><label>문의 유형<span class="req">*</span></label>'
+#         '<select name="type" required>'
+#         '<option data-ad="1">VVIP 광고문의</option><option data-ad="1">VIP 광고문의</option>'
+#         '<option data-ad="1">Special 광고문의</option>'
+#         '<option>불법 요구 제보</option><option>일반 문의</option></select></div>'
+#         '<div class="field"><label>내용<span class="req">*</span></label>'
+#         '<textarea name="message" rows="6" required placeholder="광고문의 시 매장명·희망 위치·기간을, 제보 시 근거를 함께 적어 주세요."></textarea></div>'
+#         '<div class="field"><label><input type="checkbox" required style="width:auto;margin-right:8px">'
+#         '개인정보 수집·이용에 동의합니다.</label></div>'
+#         '<input class="hp" name="website" tabindex="-1" autocomplete="off">'
+#         '<input type="hidden" name="member">' + _member_need() +
+#         '<button class="btn btn-gold" type="submit">문의 보내기</button>')
+#     body = (_hero("문의하기", "문의하기",
+#                   "광고문의(VVIP·VIP·Special)는 매장 광고주 회원가입 후, 제보·일반 문의는 회원가입 없이 남길 수 있습니다. 접수된 내용은 내부 검토 후 순차적으로 답변드립니다.") +
+#             f'<section class="wrap" style="padding-top:0;max-width:720px">'
+#             f'<div data-mem-top></div>{_member_banner()}'
+#             f'<form class="card" method="post" action="/api/contact-ads" data-mem-gate>{fhtml}</form>'
+#             f'<div style="margin-top:18px">{_member_join("회원가입 완료하기")}</div>'
+#             f'<div class="notice-box" style="margin-top:20px">긴급 상황은 112, 여성긴급전화 1366으로 즉시 도움을 받으세요. {AGE_NOTICE}</div></section>')
+#     ld = [breadcrumb([("홈", "/"), ("고객센터", "/support/"), ("문의하기", "/support/contact/")])]
+#     return "/support/contact/index.html", page(
+#         "문의하기 — 광고문의·제보·일반 문의 | 호빠클럽",
+#         "호빠클럽 문의하기. VVIP·VIP·Special 광고문의와 불법 요구 제보, 일반 문의를 접수합니다. 내부 검토 후 순차 답변드립니다.",
+#         "/support/contact/", body, jsonld=ld)
+# ──────────────────────────────────────────────────────────────
 
 
 def policy_pages():
